@@ -106,8 +106,8 @@
 
 **Purpose**: Cerrar coherencia documental y validación final transversal.
 
-- [ ] T035 [P] Verificar consistencia spec-plan-tasks y actualizar notas en `.specify/specs/001-bootstrap-proyecto/spec.md` y `.specify/specs/001-bootstrap-proyecto/plan.md`
-- [ ] T036 Ejecutar checklist de aceptación técnica y dejar evidencia en `.specify/specs/001-bootstrap-proyecto/quickstart.md`
+- [x] T035 [P] Verificar consistencia spec-plan-tasks y actualizar notas en `.specify/specs/001-bootstrap-proyecto/spec.md` y `.specify/specs/001-bootstrap-proyecto/plan.md`
+- [x] T036 Ejecutar checklist de aceptación técnica y dejar evidencia en `.specify/specs/001-bootstrap-proyecto/quickstart.md`
 
 ---
 

@@ -132,10 +132,10 @@ La implementación del endpoint GET /health DEBE cumplir exactamente este contra
 {"status": "ok", "db": "ok"}
 ```
 
-- Error de DB (HTTP 503):
+- Error de DB (HTTP 200):
 
 ```json
-{"status": "degraded", "db": "error", "detail": "<mensaje breve>"}
+{"status": "degraded", "db": "error"}
 ```
 
 Este contrato es obligatorio y prevalece como definición de implementación para la fase de desarrollo y pruebas.
@@ -164,3 +164,9 @@ No existe script de actualización de contexto de agente en `.specify/scripts/po
 ## Complexity Tracking
 
 Sin violaciones de constitución que requieran excepción en esta fase.
+
+## Cierre de consistencia (Fase 6)
+
+- Se revisó coherencia entre `spec.md`, `plan.md` y `tasks.md`.
+- Se consolidó el contrato final de `GET /health` con respuesta degradada en `HTTP 200`.
+- La evidencia de validación técnica transversal quedó documentada en `quickstart.md`.

@@ -111,3 +111,31 @@ Resultado esperado:
 - `mypy app/modules/` sin errores.
 - `pytest -q` con smoke tests en verde.
 - `alembic upgrade head` y `alembic current` correctos.
+
+## 9) Evidencia de aceptación técnica (Fase 6)
+
+Fecha de ejecución: 2026-07-09
+
+Comandos ejecutados:
+
+```bash
+python -m ruff check .
+python -m ruff format --check .
+python -m mypy app/modules/
+python -m pytest -q
+python -m alembic upgrade head
+python -m alembic current
+```
+
+Resultados registrados:
+
+- `ruff check`: `All checks passed!`
+- `ruff format --check`: `8 files already formatted`
+- `mypy app/modules/`: `Success: no issues found in 1 source file`
+- `pytest -q`: `3 passed`
+- `alembic upgrade head`: ejecución correcta con `PostgresqlImpl`
+- `alembic current`: `20260708_baseline (head)`
+
+Observaciones:
+
+- Se mantiene advertencia no bloqueante de `pytest-asyncio` sobre `asyncio_default_fixture_loop_scope` no definido explícitamente.

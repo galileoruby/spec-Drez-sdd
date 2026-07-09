@@ -106,7 +106,7 @@ El equipo debe poder ejecutar validaciones estáticas, migraciones de base de da
 - **CS-002**: La ruta / renderiza un dashboard demo con una sidebar visible y tres tarjetas de métrica.
 - **CS-003**: El layout responde correctamente al reducir el ancho de la pantalla por debajo de 1024px.
 - **CS-004**: Las verificaciones de Ruff, formato, MyPy y migración de Alembic se ejecutan sin errores críticos.
-- **CS-005**: 10. Todo el contenido narrativo de los archivos .md del repo está en español. Se aceptan como excepciones: nombres de tecnologías (FastAPI, SQLAlchemy, HTMX, Jinja2, etc.), rutas de archivos (app/main.py, .specify/, etc.), comandos de terminal (uv sync, alembic upgrade head, etc.) e identificadores técnicos (DATABASE_URL, get_session, etc.). No se aceptan párrafos, descripciones ni comentarios en inglés.
+- **CS-005**: Todo el contenido narrativo de los archivos .md del repo está en español. Se aceptan como excepciones: nombres de tecnologías (FastAPI, SQLAlchemy, HTMX, Jinja2, etc.), rutas de archivos (app/main.py, .specify/, etc.), comandos de terminal (uv sync, alembic upgrade head, etc.) e identificadores técnicos (DATABASE_URL, get_session, etc.). No se aceptan párrafos, descripciones ni comentarios en inglés.
 
 ## Clarificaciones
 
@@ -127,3 +127,10 @@ El equipo debe poder ejecutar validaciones estáticas, migraciones de base de da
 - No se implementará autenticación de usuarios ni módulos de negocio en esta especificación.
 - La interfaz inicial prioriza una base visual estable y reutilizable sobre funcionalidades complejas.
 - La baseline incluirá `pgcrypto` para estandarizar `gen_random_uuid()` desde el arranque.
+
+## Notas de cierre (Fase 6)
+
+- Se verificó la consistencia entre `spec.md`, `plan.md` y `tasks.md`.
+- El contrato final de `GET /health` queda consolidado con `HTTP 200` tanto en estado `ok` como en estado `degraded`.
+- Se completaron todas las fases de implementación definidas en `tasks.md` (T001 a T036).
+- La evidencia operativa de validación técnica quedó registrada en `quickstart.md`.
