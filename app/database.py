@@ -15,6 +15,15 @@ from app.config import get_settings
 settings = get_settings()
 
 
+def _build_async_database_url(raw_url: str) -> str:
+    """Garantiza el driver asyncpg para URLs de PostgreSQL."""
+    if raw_url.startswith("postgresql+asyncpg://"):
+        return raw_url
+    if raw_url.startswith("postgresql://"):
+        return raw_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    return raw_url
+
+
 class Base(DeclarativeBase):
     """Base declarativa para modelos SQLAlchemy."""
 
@@ -28,7 +37,7 @@ def get_engine() -> AsyncEngine:
     global _engine
     if _engine is None:
         _engine = create_async_engine(
-            settings.DATABASE_URL,
+            _build_async_database_url(settings.DATABASE_URL),
             pool_pre_ping=True,
             connect_args={
                 "statement_cache_size": 0,
