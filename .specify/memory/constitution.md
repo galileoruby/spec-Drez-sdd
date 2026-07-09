@@ -1,22 +1,12 @@
 <!--
 Sync Impact Report
-- Version change: plantilla-inicial-sin-version -> 1.0.0
+- Version change: 1.0.0 -> 1.1.0
 - Principios modificados:
-	- Placeholder principio 1 -> I. Desarrollo guiado por especificaciones (Spec-Driven)
-	- Placeholder principio 2 -> II. Arquitectura Vertical Slice obligatoria
-	- Placeholder principio 3 -> III. Stack Python y dependencias gestionadas con uv
-	- Placeholder principio 4 -> IV. Calidad verificable por slice
-	- Placeholder principio 5 -> V. Persistencia asíncrona y consistencia de datos
+	- Ninguno
 - Secciones agregadas:
-	- Ninguna (se consolidan las secciones existentes de la plantilla)
+	- Método de Trabajo: bloque "Modo Interactivo de Preguntas"
 - Secciones eliminadas:
 	- Ninguna
-- Plantillas y artefactos revisados:
-	- ✅ .specify/templates/plan-template.md (alineada; no requiere cambios)
-	- ✅ .specify/templates/spec-template.md (alineada; no requiere cambios)
-	- ✅ .specify/templates/tasks-template.md (alineada; no requiere cambios)
-	- ✅ .specify/templates/commands/*.md (no existe en este repositorio)
-	- ✅ README.md (sin contenido; sin referencias contradictorias)
 - TODOs de seguimiento:
 	- Ninguno
 -->
@@ -181,9 +171,81 @@ Cada iniciativa DEBE contener exactamente tres archivos:
 - `tasks.md` — pasos secuenciales, accionables y verificables, marcables como
   completados.
 
-El flujo obligatorio es: `speckit.specify` → `speckit.plan` → `speckit.tasks`
-→ `speckit.implement`. Ninguna fase puede saltarse. Cada tarea completada DEBE
-marcarse como `[X]` en `tasks.md`.
+El flujo obligatorio mínimo es: speckit.specify → speckit.plan →
+speckit.tasks → speckit.implement. Para specs fundacionales o de alto
+impacto se recomienda añadir speckit.clarify (entre specify y plan) y
+speckit.analyze (entre plan y tasks). Ninguna fase obligatoria puede
+saltarse.
+
+Cada tarea completada DEBE marcarse como `[X]` en `tasks.md`.
+
+### Modo Interactivo de Preguntas
+
+Los comandos `speckit.specify` y `speckit.clarify` operan en **modo
+interactivo obligatorio**: presentan sus preguntas de una en una y esperan
+respuesta antes de continuar. El comando `speckit.plan` opera en **modo
+interactivo condicional**: solo lanza preguntas si existen decisiones
+estructurales que afecten todas las specs futuras y que no estén resueltas
+en la constitution ni en la spec vigente.
+
+Cuando un comando opera en modo interactivo, DEBE seguir este protocolo
+sin excepción:
+
+**Formato de pregunta con opciones:**
+
+```
+Pregunta [N de TOTAL] — [tema corto]
+─────────────────────────────────────
+[Enunciado claro de la pregunta]
+
+Por qué importa: [1 línea sobre el impacto de decidir mal]
+
+A) [opción concreta con valor específico]
+B) [opción concreta con valor específico]  ← Recomendado
+C) [opción concreta con valor específico]
+D) Otro — escribe tu respuesta
+
+> Responde con la letra (A, B, C o D) o escribe tu respuesta libre.
+```
+
+**Formato de pregunta Sí/No:**
+
+```
+Pregunta [N de TOTAL] — [tema corto]
+─────────────────────────────────────
+[Enunciado de la pregunta]
+
+Por qué importa: [1 línea]
+
+S) Sí  ← Recomendado
+N) No
+
+> Responde S o N.
+```
+
+**Reglas de las opciones:**
+
+- Cada opción (A, B, C) DEBE ser concreta y ejecutable, nunca genérica.
+  Ejemplo correcto: `1024px (tablet landscape)`.
+  Ejemplo prohibido: `Un breakpoint estándar`.
+- Las opciones DEBEN ser mutuamente excluyentes: cada una lleva a un
+  resultado de código distinto.
+- La opción marcada con `← Recomendado` DEBE ser la más adoptada por
+  equipos que usan este stack (FastAPI + SQLAlchemy async + Supabase +
+  Python 3.13) o la que mejor respeta los principios de esta constitution.
+- La opción `D) Otro` SIEMPRE debe estar presente como escape hatch para
+  respuesta personalizada.
+
+**Reglas de respuesta:**
+
+- Si el usuario responde con una letra (A, B, C, S o N): confirmar la
+  elección en una línea con el valor concreto elegido y pasar
+  inmediatamente a la siguiente pregunta.
+- Si el usuario responde con texto libre o elige D): aceptar la respuesta,
+  confirmarla en una línea y pasar a la siguiente pregunta.
+- Al terminar todas las preguntas: mostrar un resumen de las decisiones
+  tomadas y generar el artefacto correspondiente (`spec.md`, sección
+  "Clarificaciones" en `spec.md`, o `plan.md`).
 
 ---
 
@@ -209,3 +271,7 @@ rechazarse.
 
 ## Historial de versiones
 - **v1.0.0** — Versión inicial de la constitution.
+- **v1.1.0** — Agregado protocolo de Modo Interactivo de Preguntas en
+  Método de Trabajo. Define formato, reglas de opciones y reglas de
+  respuesta para speckit.specify, speckit.clarify y speckit.plan.
+
