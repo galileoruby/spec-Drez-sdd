@@ -1,0 +1,8 @@
+{% macro icon(nombre, size=20, class_name='') -%}
+  <span
+    class="icon {{ class_name }}"
+    data-icon="{{ nombre }}"
+    style="width: {{ size }}px; height: {{ size }}px"
+    aria-hidden="true"
+  ></span>
+{%- endmacro %}

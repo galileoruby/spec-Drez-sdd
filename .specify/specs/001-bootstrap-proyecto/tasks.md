@@ -12,10 +12,10 @@
 
 **Purpose**: Dejar estructura y configuración base listas para iniciar implementación.
 
-- [ ] T001 Crear estructura inicial de app en `app/__init__.py`, `app/main.py`, `app/config.py`, `app/database.py` y `app/modules/__init__.py`
-- [ ] T002 Crear estructura de plantillas base en `app/templates/base.html`, `app/templates/components/` y `app/templates/macros/icons.html`
-- [ ] T003 [P] Crear estructura estática base en `app/static/css/app.css`, `app/static/vendor/` y `app/static/icons/`
-- [ ] T004 Configurar dependencias y herramientas del proyecto en `pyproject.toml`
+- [x] T001 Crear estructura inicial de app en `app/__init__.py`, `app/main.py`, `app/config.py`, `app/database.py` y `app/modules/__init__.py`
+- [x] T002 Crear estructura de plantillas base en `app/templates/base.html`, `app/templates/components/` y `app/templates/macros/icons.html`
+- [x] T003 [P] Crear estructura estática base en `app/static/css/app.css`, `app/static/vendor/` y `app/static/icons/`
+- [x] T004 Configurar dependencias y herramientas del proyecto en `pyproject.toml`
 
 ---
 
@@ -25,11 +25,11 @@
 
 **⚠️ CRITICAL**: Ninguna historia de usuario inicia antes de completar esta fase.
 
-- [ ] T005 Implementar settings con Pydantic Settings en `app/config.py` (DATABASE_URL, DATABASE_URL_DIRECT, APP_ENV, LOG_LEVEL)
-- [ ] T006 Implementar engine async y `get_session` en `app/database.py` con `statement_cache_size=0`, `prepared_statement_cache_size=0` y `ssl=require`
-- [ ] T007 Implementar bootstrap FastAPI y wiring de estáticos/templates en `app/main.py`
-- [ ] T008 Configurar Alembic async con `DATABASE_URL_DIRECT` en `alembic/env.py`
-- [ ] T009 Crear migración baseline con `pgcrypto` en `alembic/versions/20260708_baseline.py`
+- [x] T005 Implementar settings con Pydantic Settings en `app/config.py` (DATABASE_URL, DATABASE_URL_DIRECT, APP_ENV, LOG_LEVEL)
+- [x] T006 Implementar engine async y `get_session` en `app/database.py` con `statement_cache_size=0`, `prepared_statement_cache_size=0` y `ssl=require`
+- [x] T007 Implementar bootstrap FastAPI y wiring de estáticos/templates en `app/main.py`
+- [x] T008 Configurar Alembic async con `DATABASE_URL_DIRECT` en `alembic/env.py`
+- [x] T009 Crear migración baseline con `pgcrypto` en `alembic/versions/20260708_baseline.py`
 
 **Checkpoint**: Infraestructura técnica base lista para implementar historias.
 
