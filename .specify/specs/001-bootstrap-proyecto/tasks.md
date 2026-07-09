@@ -43,15 +43,15 @@
 
 ### Tests para User Story 1
 
-- [ ] T010 [US1] Escribir smoke tests iniciales para `GET /health` y `GET /` en `tests/test_smoke.py`
+- [x] T010 [US1] Escribir smoke tests iniciales para `GET /health` y `GET /` en `tests/test_smoke.py`
 
 ### Implementation para User Story 1
 
-- [ ] T011 [US1] Implementar `GET /health` con chequeo async (`SELECT 1`) y respuesta degradada en `app/main.py`
-- [ ] T012 [P] [US1] Crear plantilla de dashboard demo en `app/templates/pages/dashboard.html`
-- [ ] T013 [US1] Implementar `GET /` con métricas hardcoded e integración de plantilla en `app/main.py`
-- [ ] T014 [US1] Agregar logging estructurado INFO (inicio/fin, ruta, status, duración) para `/health` y `/` en `app/main.py`
-- [ ] T015 [US1] Ajustar smoke tests al contrato final de endpoints en `tests/test_smoke.py`
+- [x] T011 [US1] Implementar `GET /health` con chequeo async (`SELECT 1`) y respuesta degradada en `app/main.py`
+- [x] T012 [P] [US1] Crear plantilla de dashboard demo en `app/templates/pages/dashboard.html`
+- [x] T013 [US1] Implementar `GET /` con métricas hardcoded e integración de plantilla en `app/main.py`
+- [x] T014 [US1] Agregar logging estructurado INFO (inicio/fin, ruta, status, duración) para `/health` y `/` en `app/main.py`
+- [x] T015 [US1] Ajustar smoke tests al contrato final de endpoints en `tests/test_smoke.py`
 
 **Checkpoint**: MVP funcional con endpoints base y verificación automática mínima.
 

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Realtor{% endblock %}
+
+{% block content %}
+  <div class="layout-dashboard">
+    <aside class="sidebar" aria-label="Sidebar principal">
+      <h1>Realtor</h1>
+      <p>Panel base</p>
+    </aside>
+
+    <main class="main-content">
+      <header class="navbar" aria-label="Barra superior">
+        <strong>Dashboard</strong>
+      </header>
+
+      <section class="metricas" aria-label="Métricas principales">
+        {% for metrica in metricas %}
+          <article class="tarjeta-metrica">
+            <p class="tarjeta-metrica__titulo">{{ metrica.titulo }}</p>
+            <p class="tarjeta-metrica__valor">{{ metrica.valor }}</p>
+            <p class="tarjeta-metrica__icono">{{ metrica.icono }}</p>
+          </article>
+        {% endfor %}
+      </section>
+    </main>
+  </div>
+{% endblock %}
