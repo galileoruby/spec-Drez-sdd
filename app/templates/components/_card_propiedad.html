@@ -1,0 +1,18 @@
+{% from "macros/icons.html" import icon %}
+
+<article class="card-propiedad" aria-label="{{ propiedad.titulo if propiedad else 'Sin propiedad' }}">
+  {% if propiedad %}
+    <h3 class="card-propiedad__title">{{ propiedad.titulo }}</h3>
+    <p class="card-propiedad__meta">{{ propiedad.ubicacion }}</p>
+    <div class="card-propiedad__footer">
+      {% set estado = propiedad.estado if propiedad.estado else 'Inactiva' %}
+      {% include "components/_badge_estado.html" %}
+      <span class="card-propiedad__precio">{{ propiedad.precio }}</span>
+    </div>
+  {% else %}
+    <div class="estado-vacio">
+      {{ icon("building-2", 20) }}
+      <p>No hay propiedades para mostrar.</p>
+    </div>
+  {% endif %}
+</article>

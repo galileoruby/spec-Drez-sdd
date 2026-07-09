@@ -65,20 +65,20 @@
 
 ### Implementation para User Story 2
 
-- [ ] T016 [US2] Definir tokens y 7 secciones CSS en `app/static/css/app.css`
-- [ ] T017 [P] [US2] Crear componente sidebar en `app/templates/components/_sidebar.html`
-- [ ] T018 [P] [US2] Crear componente navbar en `app/templates/components/_navbar.html`
-- [ ] T019 [P] [US2] Crear componente tarjeta métrica en `app/templates/components/_tarjeta_metrica.html`
-- [ ] T020 [P] [US2] Crear componente card propiedad en `app/templates/components/_card_propiedad.html`
-- [ ] T021 [P] [US2] Crear componente accesos rápidos en `app/templates/components/_accesos_rapidos.html`
-- [ ] T022 [P] [US2] Crear componente badge estado en `app/templates/components/_badge_estado.html`
-- [ ] T023 [P] [US2] Crear componente campo de formulario en `app/templates/components/_form_field.html`
-- [ ] T024 [P] [US2] Crear componente alerta en `app/templates/components/_alerta.html`
-- [ ] T025 [US2] Implementar macro `icon(nombre, size, class)` para SVG inline en `app/templates/macros/icons.html`
-- [ ] T026 [US2] Vendorear HTMX local y referenciarlo sin CDN desde `app/static/vendor/htmx.min.js` y `app/templates/base.html`
-- [ ] T027 [US2] Vendorear set de 13 SVG oficiales Lucide en `app/static/icons/`
-- [ ] T028 [US2] Integrar layout base + componentes + zona flash en `app/templates/base.html` y `app/templates/pages/dashboard.html`
-- [ ] T029 [US2] Implementar comportamiento responsive de sidebar `< 1024px` en `app/static/css/app.css`
+- [x] T016 [US2] Definir tokens y 7 secciones CSS en `app/static/css/app.css`
+- [x] T017 [P] [US2] Crear componente sidebar en `app/templates/components/_sidebar.html`
+- [x] T018 [P] [US2] Crear componente navbar en `app/templates/components/_navbar.html`
+- [x] T019 [P] [US2] Crear componente tarjeta métrica en `app/templates/components/_tarjeta_metrica.html`
+- [x] T020 [P] [US2] Crear componente card propiedad en `app/templates/components/_card_propiedad.html`
+- [x] T021 [P] [US2] Crear componente accesos rápidos en `app/templates/components/_accesos_rapidos.html`
+- [x] T022 [P] [US2] Crear componente badge estado en `app/templates/components/_badge_estado.html`
+- [x] T023 [P] [US2] Crear componente campo de formulario en `app/templates/components/_form_field.html`
+- [x] T024 [P] [US2] Crear componente alerta en `app/templates/components/_alerta.html`
+- [x] T025 [US2] Implementar macro `icon(nombre, size, class)` para SVG inline en `app/templates/macros/icons.html`
+- [x] T026 [US2] Vendorear HTMX local y referenciarlo sin CDN desde `app/static/vendor/htmx.min.js` y `app/templates/base.html`
+- [x] T027 [US2] Vendorear set de 13 SVG oficiales Lucide en `app/static/icons/`
+- [x] T028 [US2] Integrar layout base + componentes + zona flash en `app/templates/base.html` y `app/templates/pages/dashboard.html`
+- [x] T029 [US2] Implementar comportamiento responsive de sidebar `< 1024px` en `app/static/css/app.css`
 
 **Checkpoint**: UI base reusable completa y consistente con el sistema visual definido.
 

@@ -1,0 +1,11 @@
+{% set estado_normalizado = (estado | default('Info')) | lower %}
+{% set clase = 'badge-estado--info' %}
+{% if estado_normalizado in ['disponible', 'pagado'] %}
+  {% set clase = 'badge-estado--success' %}
+{% elif estado_normalizado in ['pendiente', 'en mantenimiento'] %}
+  {% set clase = 'badge-estado--warning' %}
+{% elif estado_normalizado in ['vencido', 'inactiva'] %}
+  {% set clase = 'badge-estado--danger' %}
+{% endif %}
+
+<span class="badge-estado {{ clase }}">{{ estado }}</span>

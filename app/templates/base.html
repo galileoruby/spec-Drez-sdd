@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/static/css/app.css" />
   </head>
   <body>
+    <div id="flash-zone" class="flash-zone" aria-live="polite"></div>
     {% block content %}{% endblock %}
+    <script src="/static/vendor/htmx.min.js" defer></script>
   </body>
 </html>

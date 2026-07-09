@@ -1,0 +1,27 @@
+{% from "macros/icons.html" import icon %}
+
+<aside class="sidebar" id="sidebar" aria-label="Navegacion principal">
+  <div class="sidebar__brand">
+    {{ icon("layout-dashboard", 22, "sidebar__brand-icon") }}
+    <span class="sidebar__brand-text">Realtor</span>
+  </div>
+
+  <nav class="sidebar__nav" aria-label="Secciones">
+    <a class="sidebar__link sidebar__link--active" href="/" aria-current="page">
+      {{ icon("layout-dashboard", 18) }}
+      <span>Dashboard</span>
+    </a>
+    <a class="sidebar__link" href="#" aria-disabled="true">
+      {{ icon("building-2", 18) }}
+      <span>Propiedades</span>
+    </a>
+    <a class="sidebar__link" href="#" aria-disabled="true">
+      {{ icon("file-text", 18) }}
+      <span>Contratos</span>
+    </a>
+    <a class="sidebar__link" href="#" aria-disabled="true">
+      {{ icon("settings", 18) }}
+      <span>Configuracion</span>
+    </a>
+  </nav>
+</aside>

@@ -1,0 +1,11 @@
+{% from "macros/icons.html" import icon %}
+
+<article class="tarjeta-metrica" aria-label="{{ metrica.titulo }}">
+  <div class="tarjeta-metrica__head">
+    <span class="tarjeta-metrica__icon-wrap" aria-hidden="true">
+      {{ icon(metrica.icono, 18) }}
+    </span>
+    <p class="tarjeta-metrica__titulo">{{ metrica.titulo }}</p>
+  </div>
+  <p class="tarjeta-metrica__valor">{{ metrica.valor }}</p>
+</article>

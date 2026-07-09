@@ -72,7 +72,7 @@ async def test_get_root_dashboard_demo() -> None:
 
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
-    assert "Sidebar principal" in response.text
+    assert "Navegacion principal" in response.text
     assert "Propiedades activas" in response.text
     assert "12" in response.text
     assert "Contratos vigentes" in response.text

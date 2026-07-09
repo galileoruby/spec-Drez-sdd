@@ -1,0 +1,24 @@
+{% from "macros/icons.html" import icon %}
+
+<header class="navbar" aria-label="Barra superior">
+  <div class="navbar__left">
+    <button
+      type="button"
+      class="navbar__toggle"
+      aria-label="Alternar sidebar"
+      aria-controls="sidebar"
+      aria-expanded="false"
+      onclick="document.body.classList.toggle('sidebar-open'); this.setAttribute('aria-expanded', String(document.body.classList.contains('sidebar-open')));"
+    >
+      {{ icon("menu", 20) }}
+    </button>
+    <div class="navbar__titles">
+      <p class="navbar__kicker">Panel principal</p>
+      <h1 class="navbar__title">Dashboard</h1>
+    </div>
+  </div>
+  <div class="navbar__right">
+    <button type="button" class="btn btn--secondary">Exportar</button>
+    <button type="button" class="btn btn--primary">Nueva propiedad</button>
+  </div>
+</header>

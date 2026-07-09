@@ -1,28 +1,22 @@
 {% extends "base.html" %}
+{% from "macros/icons.html" import icon %}
 
 {% block title %}Dashboard | Realtor{% endblock %}
 
 {% block content %}
   <div class="layout-dashboard">
-    <aside class="sidebar" aria-label="Sidebar principal">
-      <h1>Realtor</h1>
-      <p>Panel base</p>
-    </aside>
+    {% include "components/_sidebar.html" %}
 
     <main class="main-content">
-      <header class="navbar" aria-label="Barra superior">
-        <strong>Dashboard</strong>
-      </header>
+      {% include "components/_navbar.html" %}
 
-      <section class="metricas" aria-label="Métricas principales">
+      <section class="metricas" aria-label="Metricas principales">
         {% for metrica in metricas %}
-          <article class="tarjeta-metrica">
-            <p class="tarjeta-metrica__titulo">{{ metrica.titulo }}</p>
-            <p class="tarjeta-metrica__valor">{{ metrica.valor }}</p>
-            <p class="tarjeta-metrica__icono">{{ metrica.icono }}</p>
-          </article>
+          {% include "components/_tarjeta_metrica.html" %}
         {% endfor %}
       </section>
+
+      {% include "components/_accesos_rapidos.html" %}
     </main>
   </div>
 {% endblock %}

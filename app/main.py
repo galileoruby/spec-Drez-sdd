@@ -1,10 +1,12 @@
 """Punto de entrada HTTP de la aplicación."""
 
 import logging
+import re
 import time
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, Request
+from markupsafe import Markup, escape
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -29,6 +31,32 @@ METRICAS_DASHBOARD = [
 ]
 
 
+def icon_svg(nombre: str, size: int = 20, class_name: str = "") -> Markup:
+    """Retorna un SVG inline de la carpeta de iconos vendoreados."""
+    icon_path = BASE_DIR / "static" / "icons" / f"{nombre}.svg"
+    classes = "icon"
+    if class_name:
+        classes = f"{classes} {escape(class_name)}"
+
+    if not icon_path.exists():
+        return Markup(
+            f'<span class="{classes}" aria-hidden="true" '
+            f'style="width:{size}px;height:{size}px"></span>'
+        )
+
+    svg_text = icon_path.read_text(encoding="utf-8")
+    svg_text = re.sub(r'\s(?:width|height|class)="[^"]*"', "", svg_text)
+    svg_text = svg_text.replace(
+        "<svg",
+        (
+            f'<svg class="{classes}" width="{size}" height="{size}" '
+            f'aria-hidden="true" focusable="false"'
+        ),
+        1,
+    )
+    return Markup(svg_text)
+
+
 async def _check_db(session: AsyncSession) -> bool:
     """Verifica conectividad de base de datos con una consulta liviana."""
     await session.execute(text("SELECT 1"))
@@ -39,6 +67,7 @@ def create_app() -> FastAPI:
     """Crea y configura la instancia principal de FastAPI."""
     app = FastAPI(title="Realtor")
     app.state.templates = templates
+    templates.env.globals["icon_svg"] = icon_svg
     app.mount(
         "/static",
         StaticFiles(directory=str(BASE_DIR / "static")),
