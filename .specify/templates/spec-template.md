@@ -97,6 +97,20 @@
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-UI-001**: Si la feature toca frontend, el sistema DEBE mantener los tokens y hex canónicos definidos en .github/instructions/frontend.instructions.md.
+- **FR-UI-002**: El sistema NO DEBE introducir paletas alternativas ni reemplazos de tokens visuales sin una spec explícita de diseño.
+
+## Visual Tokens Governance *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Complete this section whenever the feature touches UI,
+  design system, CSS variables, reusable components, or visual behavior.
+-->
+
+- **Token Impact**: [State whether visual tokens are changed. Use "No changes" or list impacted tokens]
+- **Explicit Authorization**: [Reference the approved decision in this spec that authorizes token changes]
+- **Task Traceability**: [List the task IDs in tasks.md that implement each token change]
+- **Operational Source**: `.github/instructions/frontend.instructions.md` is the operative source for visual token definitions and usage.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -116,6 +130,8 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-UI-001**: Verificación estática confirma coincidencia exacta entre los tokens de app.css y la paleta canónica definida en .github/instructions/frontend.instructions.md.
+- **SC-UI-002**: Revisión de tasks.md muestra trazabilidad explícita para cualquier cambio visual autorizado.
 
 ## Assumptions
 

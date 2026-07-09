@@ -1,12 +1,16 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 -> 1.1.0
+- Version change: 1.1.0 -> 1.2.0
 - Principios modificados:
-	- Ninguno
+  - II. Spec-Driven Development (NO NEGOCIABLE)
 - Secciones agregadas:
-	- Método de Trabajo: bloque "Modo Interactivo de Preguntas"
+  - Principios Fundamentales: VIII. Gobernanza de Tokens Visuales
 - Secciones eliminadas:
 	- Ninguna
+- Templates que requieren actualización:
+  - ✅ .specify/templates/spec-template.md
+  - ✅ .specify/templates/plan-template.md (sin cambio requerido tras validación)
+  - ✅ .specify/templates/tasks-template.md (sin cambio requerido tras validación)
 - TODOs de seguimiento:
 	- Ninguno
 -->
@@ -31,6 +35,11 @@ El orden de implementación lo define el **prefijo numérico** de cada spec: el
 número menor SIEMPRE se implementa antes que el mayor. Cualquier código,
 template o migración que no rastree a una tarea en `tasks.md` de una spec
 aprobada DEBE rechazarse en revisión.
+
+Para cambios de diseño visual, especialmente tokens visuales (color,
+espaciado, tipografía, radios, sombras y derivados), la spec DEBE incluir
+autorización explícita del cambio y trazabilidad completa en `tasks.md`.
+Sin autorización explícita y tareas trazables, el cambio DEBE rechazarse.
 
 ### III. Vertical Slice Architecture (NO NEGOCIABLE)
 El código de negocio DEBE organizarse por feature/módulo, NO por capa técnica.
@@ -113,6 +122,14 @@ o `repository.py` cuando la función toque I/O. Solo se permite `def` síncrono
 para **puro cómputo en memoria** (mapeos, cálculos, validaciones sin I/O). Las
 sesiones de base de datos DEBEN ser `AsyncSession`; los clientes HTTP DEBEN ser
 `httpx.AsyncClient` u otro cliente async equivalente.
+
+### VIII. Gobernanza de Tokens Visuales
+Los tokens visuales del sistema (variables CSS de color, espaciado, tipografía,
+radios, sombras y equivalentes) son activos gobernados. Cualquier cambio en
+tokens visuales DEBE tener autorización explícita en una spec aprobada y DEBE
+quedar trazado a tareas verificables en `tasks.md` antes de su implementación.
+No se permite modificar tokens por conveniencia local, ajuste ad hoc o criterio
+estético aislado sin ese rastro formal.
 
 ---
 
@@ -261,17 +278,28 @@ documentarse con nueva versión semántica:
   principio existente.
 - **PATCH**: aclaraciones, redacción o correcciones no semánticas.
 
-Toda PR o revisión DEBE verificar el cumplimiento de los **siete principios
-(I al VII)** antes de aprobarse. Cualquier violación DEBE justificarse
+Toda PR o revisión DEBE verificar el cumplimiento de los **ocho principios
+(I al VIII)** antes de aprobarse. Cualquier violación DEBE justificarse
 explícitamente en la sección **Complexity Tracking** del `plan.md` de la
 iniciativa correspondiente; en ausencia de justificación, la PR DEBE
 rechazarse.
 
 ---
+## Sistema Visual Canonico
+Para todo trabajo frontend, la definición canónica de tokens visuales vive en .github/instructions/frontend.instructions.md.
+La implementación en app.css DEBE respetar exactamente esa paleta y tokens.
+No se aceptan cambios implícitos de color por criterio estético durante implementación.
+Toda variación de tokens requiere spec aprobada, actualización de instrucciones y trazabilidad en tasks.md.
+El incumplimiento de esta regla invalida la implementación de la spec en revisión.
+
+---
+
 
 ## Historial de versiones
 - **v1.0.0** — Versión inicial de la constitution.
 - **v1.1.0** — Agregado protocolo de Modo Interactivo de Preguntas en
   Método de Trabajo. Define formato, reglas de opciones y reglas de
   respuesta para speckit.specify, speckit.clarify y speckit.plan.
+- **v1.2.0** — Se agrega gobernanza global de tokens visuales: autorización
+  explícita en spec aprobada y trazabilidad obligatoria en `tasks.md`.
 

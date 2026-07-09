@@ -65,3 +65,18 @@ de cada spec. Toda tarea debe rastrear a `tasks.md`.
 - `DATABASE_URL_DIRECT` apunta a la **conexión directa** (puerto 5432) y
   se usa SOLO para Alembic.
 - SSL es obligatorio (`ssl=require` en `connect_args`).
+
+
+
+## Flujo Speckit — hooks obligatorios
+
+Antes de ejecutar cualquier comando `speckit.*`, el agente DEBE revisar
+`.specify/extensions.yml` y ejecutar todos los hooks `before_<comando>`
+con `optional: false`.
+
+Caso crítico: `before_specify` requiere ejecutar `speckit.git.feature`
+ANTES de crear el directorio de la spec o `spec.md`. Este hook crea el
+branch de la feature y actualiza `.specify/feature.json`.
+
+PROHIBIDO crear archivos bajo `.specify/specs/<nueva-spec>/` sin haber
+ejecutado previamente el hook obligatorio correspondiente.

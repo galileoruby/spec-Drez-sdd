@@ -6,6 +6,8 @@ applyTo: "app/modules/**/templates/**,app/templates/**,app/static/**"
 
 Este archivo es la **fuente única de verdad** para todo lo relacionado con
 presentación, estructura de templates, estilos y experiencia de usuario.
+También es la **fuente operativa obligatoria** para la definición, uso y
+gobernanza de los tokens visuales del proyecto.
 Copilot lo aplica automáticamente al trabajar en cualquier archivo bajo
 `app/modules/**/templates/`, `app/templates/` o `app/static/`.
 
@@ -59,6 +61,9 @@ Todos los valores visuales se consumen vía variables CSS declaradas en
 `:root` de `app/static/css/app.css`. NUNCA hardcodear colores, espaciados,
 radios o sombras en componentes.
 
+Regla operativa: cualquier cambio en tokens visuales DEBE estar explícitamente
+autorizado por una spec aprobada y trazado a tareas concretas en `tasks.md`.
+
 ### Color (paleta neutra + acento)
 
 | Token                  | Uso                                    |
@@ -95,7 +100,16 @@ radios o sombras en componentes.
 - Escala: h1 28px / h2 22px / h3 18px / body 15px / caption 13px.
 - Pesos: 400, 500 (medio), 600 (semibold para títulos y acciones).
 
-### Valores concretos sugeridos para `:root`
+### Valores concretos obligatorios para `:root` de proyecto
+
+Los siguientes tokens son canónicos y DEBEN mantenerse exactamente en `app/static/css/app.css`.
+No se permite sustituir la paleta por variantes “equivalentes”, reinterpretaciones estéticas ni cambios implícitos durante la implementación.
+
+Cualquier cambio de token visual requiere:
+1. una spec aprobada,
+2. actualización explícita de este archivo,
+3. actualización explícita de `.specify/memory/constitution.md`,
+4. trazabilidad en `tasks.md`.
 
 ```css
 :root {

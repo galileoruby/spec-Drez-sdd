@@ -1,0 +1,8 @@
+hooks:
+  before_specify:
+    - extension: git-branch-guard
+      command: speckit.git.feature
+      description: Crear o cambiar a la rama de la feature antes de generar la spec
+      prompt: Crear rama de feature y actualizar feature.json
+      optional: false
+      enabled: true
