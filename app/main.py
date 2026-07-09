@@ -4,12 +4,13 @@ import logging
 import re
 import time
 from pathlib import Path
+from typing import Annotated
 
 from fastapi import Depends, FastAPI, Request
-from markupsafe import Markup, escape
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from markupsafe import Markup, escape
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -96,7 +97,9 @@ def create_app() -> FastAPI:
         return await call_next(request)
 
     @app.get("/health")
-    async def health(session: AsyncSession = Depends(get_session)) -> dict[str, str]:
+    async def health(
+        session: Annotated[AsyncSession, Depends(get_session)],
+    ) -> dict[str, str]:
         try:
             await _check_db(session)
         except Exception:

@@ -18,6 +18,16 @@ uv sync
 Resultado esperado:
 - Instalación exitosa sin errores.
 
+## 1.1) Confirmar URLs de Supabase
+
+Verifica que en `.env` se cumpla:
+
+- `DATABASE_URL` usa pooler en puerto `6543` (runtime)
+- `DATABASE_URL_DIRECT` usa conexión directa en puerto `5432` (migraciones)
+
+Resultado esperado:
+- Configuración separada correcta entre runtime y Alembic.
+
 ## 2) Aplicar migración baseline
 
 ```bash
@@ -27,6 +37,15 @@ uv run alembic upgrade head
 Resultado esperado:
 - Migración aplicada correctamente.
 - Baseline con `pgcrypto` habilitado.
+
+Comando de verificación opcional:
+
+```bash
+uv run alembic current
+```
+
+Resultado esperado:
+- Revisión actual en `20260708_baseline`.
 
 ## 3) Levantar servidor
 
@@ -70,7 +89,7 @@ Resultado esperado:
 ```bash
 uv run ruff check .
 uv run ruff format --check .
-uv run mypy --strict app/modules/
+uv run mypy app/modules/
 ```
 
 Resultado esperado:
@@ -84,3 +103,11 @@ uv run pytest -q
 
 Resultado esperado:
 - Smoke tests de `/health` y `/` en verde.
+
+## 8) Checklist de cierre de la fase
+
+- `ruff check` sin errores.
+- `ruff format --check` sin diffs pendientes.
+- `mypy app/modules/` sin errores.
+- `pytest -q` con smoke tests en verde.
+- `alembic upgrade head` y `alembic current` correctos.

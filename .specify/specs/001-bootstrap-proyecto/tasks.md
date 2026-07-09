@@ -92,11 +92,11 @@
 
 ### Implementation para User Story 3
 
-- [ ] T030 [US3] Configurar Ruff (`E,F,I,B,UP,ASYNC`, py313, line-length 88) en `pyproject.toml`
-- [ ] T031 [US3] Configurar MyPy strict para `app/modules/` en `pyproject.toml`
-- [ ] T032 [US3] Configurar pytest-asyncio con `asyncio_mode = "auto"` en `pyproject.toml`
-- [ ] T033 [US3] Revisar configuración de Alembic para compatibilidad con Supabase en `alembic/env.py` y `alembic/versions/20260708_baseline.py`
-- [ ] T034 [US3] Actualizar guía de validación operativa en `.specify/specs/001-bootstrap-proyecto/quickstart.md`
+- [x] T030 [US3] Configurar Ruff (`E,F,I,B,UP,ASYNC`, py313, line-length 88) en `pyproject.toml`
+- [x] T031 [US3] Configurar MyPy strict para `app/modules/` en `pyproject.toml`
+- [x] T032 [US3] Configurar pytest-asyncio con `asyncio_mode = "auto"` en `pyproject.toml`
+- [x] T033 [US3] Revisar configuración de Alembic para compatibilidad con Supabase en `alembic/env.py` y `alembic/versions/20260708_baseline.py`
+- [x] T034 [US3] Actualizar guía de validación operativa en `.specify/specs/001-bootstrap-proyecto/quickstart.md`
 
 **Checkpoint**: Base técnica validable para iniciar specs de dominio.
 
