@@ -54,8 +54,16 @@ hace acceso a datos.
 ## Spec-Driven Development
 
 NO implementar nada que no esté descrito en un `spec.md` aprobado bajo
-`.specify/specs/`. El orden de implementación lo define el prefijo numérico
+`specs/` (raíz del repositorio). El orden de implementación lo define el prefijo numérico
 de cada spec. Toda tarea debe rastrear a `tasks.md`.
+
+`specs/` es la ubicación canónica de artefactos de feature
+(`spec.md`, `plan.md`, `tasks.md`, `research.md`, `data-model.md`,
+`contracts/`, `quickstart.md`, `checklists/`).
+
+`.specify/` se reserva para infraestructura de spec-kit
+(`memory/`, `scripts/`, `templates/`, `extensions.yml`, `feature.json`).
+PROHIBIDO crear o usar `.specify/specs/`.
 
 ## Base de datos (Supabase Postgres)
 
@@ -78,5 +86,5 @@ Caso crítico: `before_specify` requiere ejecutar `speckit.git.feature`
 ANTES de crear el directorio de la spec o `spec.md`. Este hook crea el
 branch de la feature y actualiza `.specify/feature.json`.
 
-PROHIBIDO crear archivos bajo `.specify/specs/<nueva-spec>/` sin haber
+PROHIBIDO crear archivos bajo `specs/<nueva-spec>/` sin haber
 ejecutado previamente el hook obligatorio correspondiente.
