@@ -4,6 +4,13 @@
 {% block title %}Dashboard | Realtor{% endblock %}
 
 {% block content %}
+  {# DEMO: datos de muestra hardcodeados. Reemplazar con contexto de route en spec futura. #}
+  {% set metricas = [
+    {"titulo": "Propiedades", "valor": "24", "icono": "building-2", "tendencia": "+3 este mes"},
+    {"titulo": "Contratos activos", "valor": "18", "icono": "file-text", "tendencia": ""},
+    {"titulo": "Pagos pendientes", "valor": "5", "icono": "wallet", "tendencia": "-2 desde ayer"},
+  ] %}
+
   <div class="layout-dashboard">
     {% include "components/_sidebar.html" %}
 
@@ -16,7 +23,29 @@
         {% endfor %}
       </section>
 
+      <section class="seccion-alertas" aria-label="Alertas del sistema">
+        {% set alerta_demo = {"tipo": "info", "mensaje": "Sistema operando con normalidad. Proxima revision: 15 jul."} %}
+        {% with tipo=alerta_demo.tipo, mensaje=alerta_demo.mensaje %}
+          {% include "components/_alerta.html" %}
+        {% endwith %}
+        <!-- TODO: estado-vacio -->
+        <!-- TODO: estado-error -->
+      </section>
+
       {% include "components/_accesos_rapidos.html" %}
+
+      <section class="tarjetas-contenido" aria-label="Tarjetas de contenido de apoyo">
+        {% set propiedades_demo = [
+          {"titulo": "Apto. Reforma 12A", "ubicacion": "Col. Reforma, CDMX", "estado": "Disponible", "precio": "$18,500/mes"},
+          {"titulo": "Casa Polanco", "ubicacion": "Polanco, CDMX", "estado": "Rentada", "precio": "$32,000/mes"},
+          {"titulo": "Local Condesa", "ubicacion": "La Condesa, CDMX", "estado": "En mantenimiento", "precio": "$12,000/mes"},
+        ] %}
+        {% for p in propiedades_demo %}
+          {% set propiedad = p %}
+          {% include "components/_card_propiedad.html" %}
+        {% endfor %}
+        <!-- TODO: estado-vacio -->
+      </section>
     </main>
   </div>
 {% endblock %}

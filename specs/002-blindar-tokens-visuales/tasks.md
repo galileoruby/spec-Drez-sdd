@@ -4,7 +4,7 @@ description: "Lista de tareas para blindar tokens visuales"
 
 # Tareas: 002-blindar-tokens-visuales
 
-**Entrada**: Documentos de diseño de `.specify/specs/002-blindar-tokens-visuales/`
+**Entrada**: Documentos de diseño de `specs/002-blindar-tokens-visuales/`
 
 **Prerrequisitos**: `plan.md` (requerido), `spec.md` (requerido), `checklists/requirements.md`
 
@@ -22,7 +22,7 @@ description: "Lista de tareas para blindar tokens visuales"
 
 **Propósito**: Confirmar alcance y artefactos base antes de tocar la gobernanza
 
-- [X] T001 [P] Revisar el alcance de la spec y confirmar los artefactos base en `.specify/specs/002-blindar-tokens-visuales/spec.md` y `.specify/specs/002-blindar-tokens-visuales/checklists/requirements.md`
+- [X] T001 [P] Revisar el alcance de la spec y confirmar los artefactos base en `specs/002-blindar-tokens-visuales/spec.md` y `specs/002-blindar-tokens-visuales/checklists/requirements.md`
 
 ---
 

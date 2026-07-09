@@ -1,8 +1,8 @@
 # Plan de Implementación: 001-bootstrap-proyecto
 
-**Branch**: `001-bootstrap-proyecto` | **Date**: 2026-07-08 | **Spec**: `.specify/specs/001-bootstrap-proyecto/spec.md`
+**Branch**: `001-bootstrap-proyecto` | **Date**: 2026-07-08 | **Spec**: `specs/001-bootstrap-proyecto/spec.md`
 
-**Input**: Especificación de funcionalidad desde `.specify/specs/001-bootstrap-proyecto/spec.md`
+**Input**: Especificación de funcionalidad desde `specs/001-bootstrap-proyecto/spec.md`
 
 ## Resumen
 
@@ -56,7 +56,7 @@ Se construirá el bootstrap técnico y visual del sistema Realtor como base obli
 ### Documentación (esta feature)
 
 ```text
-.specify/specs/001-bootstrap-proyecto/
+specs/001-bootstrap-proyecto/
 ├── plan.md
 ├── research.md
 ├── data-model.md

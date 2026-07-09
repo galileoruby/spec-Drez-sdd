@@ -8,4 +8,7 @@
     <p class="tarjeta-metrica__titulo">{{ metrica.titulo }}</p>
   </div>
   <p class="tarjeta-metrica__valor">{{ metrica.valor }}</p>
+  {% if metrica.tendencia | default('') %}
+    <p class="tarjeta-metrica__tendencia tarjeta-metrica__tendencia--{{ 'positiva' if metrica.tendencia.startswith('+') else ('negativa' if metrica.tendencia.startswith('-') else 'neutra') }}">{{ metrica.tendencia }}</p>
+  {% endif %}
 </article>

@@ -54,16 +54,11 @@ hace acceso a datos.
 ## Spec-Driven Development
 
 NO implementar nada que no esté descrito en un `spec.md` aprobado bajo
-`specs/` (raíz del repositorio). El orden de implementación lo define el prefijo numérico
-de cada spec. Toda tarea debe rastrear a `tasks.md`.
-
-`specs/` es la ubicación canónica de artefactos de feature
-(`spec.md`, `plan.md`, `tasks.md`, `research.md`, `data-model.md`,
-`contracts/`, `quickstart.md`, `checklists/`).
-
-`.specify/` se reserva para infraestructura de spec-kit
-(`memory/`, `scripts/`, `templates/`, `extensions.yml`, `feature.json`).
-PROHIBIDO crear o usar `.specify/specs/`.
+`specs/` (carpeta en la **raíz** del repositorio). El orden de implementación
+lo define el prefijo numérico de cada spec. Toda tarea debe rastrear a
+`tasks.md`. PROHIBIDO crear specs bajo `.specify/specs/`: esa carpeta se
+reserva exclusivamente para infraestructura de spec-kit (`memory/`,
+`scripts/`, `templates/`, `extensions.yml`, `feature.json`).
 
 ## Base de datos (Supabase Postgres)
 
@@ -77,6 +72,10 @@ PROHIBIDO crear o usar `.specify/specs/`.
 
 
 ## Flujo Speckit — hooks obligatorios
+
+<!-- SPECKIT START -->
+Plan activo de ejecución: specs/003-redisenar-home/plan.md
+<!-- SPECKIT END -->
 
 Antes de ejecutar cualquier comando `speckit.*`, el agente DEBE revisar
 `.specify/extensions.yml` y ejecutar todos los hooks `before_<comando>`

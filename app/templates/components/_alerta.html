@@ -1,7 +1,7 @@
 {% from "macros/icons.html" import icon %}
 
 {% set tipo_alerta = tipo | default('info') %}
-<div class="alerta alerta--{{ tipo_alerta }}" role="status" id="flash-zone" {% if oob %}hx-swap-oob="true"{% endif %}>
+<div class="alerta alerta--{{ tipo_alerta }}" role="status"{% if oob %} id="flash-zone" hx-swap-oob="true"{% endif %}>
   <span class="alerta__icon" aria-hidden="true">
     {% if tipo_alerta == 'success' %}
       {{ icon('check-circle-2', 18) }}

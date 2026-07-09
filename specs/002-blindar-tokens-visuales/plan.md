@@ -1,8 +1,11 @@
 # Plan de implementación: 002-blindar-tokens-visuales
 
+**Branch**: `002-blindar-tokens-visuales` | **Fecha**: `2026-05-14` | **Spec**: [specs/002-blindar-tokens-visuales/spec.md](spec.md)
+**Entrada**: Especificación de la feature en [specs/002-blindar-tokens-visuales/spec.md](spec.md)
+
 **Rama**: `002-blindar-tokens-visuales` | **Fecha**: 2026-07-09 | **Spec**: [spec.md](spec.md)
 
-**Entrada**: Especificación de funcionalidad de `.specify/specs/002-blindar-tokens-visuales/spec.md`
+**Entrada**: Especificación de funcionalidad de `specs/002-blindar-tokens-visuales/spec.md`
 
 ## Resumen
 
@@ -39,7 +42,7 @@ Cumple con los principios vigentes de la constitution. No se introducen excepcio
 ### Documentación de esta feature
 
 ```text
-.specify/specs/002-blindar-tokens-visuales/
+specs/002-blindar-tokens-visuales/
 ├── spec.md
 ├── plan.md
 ├── tasks.md

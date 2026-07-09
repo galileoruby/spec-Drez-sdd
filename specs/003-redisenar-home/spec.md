@@ -1,0 +1,116 @@
+# Feature Specification: Rediseñar Home Principal
+
+**Feature Branch**: `003-redisenar-home`
+
+**Created**: 2026-07-09
+
+**Status**: Ready for Review
+
+**Input**: User description: "Crear la spec 003-redisenar-home para rediseñar la Home principal, cumpliendo estrictamente la gobernanza visual de #file:frontend.instructions.md y #file:constitution.md. Incluir alcance sobre index.html, base.html, componentes de components y app.css, con user stories priorizadas, criterios de aceptación medibles y sección VTG obligatoria."
+
+## User Scenarios & Testing *(mandatory)*
+
+### User Story 1 - Home clara y accionable para operación diaria (Priority: P1)
+
+Como persona operadora de la plataforma inmobiliaria, necesito que la Home principal presente métricas, alertas y accesos clave con jerarquía visual clara para decidir y actuar en menos tiempo.
+
+**Why this priority**: La Home es la entrada principal del flujo diario; si no es clara, se degrada toda la operación del sistema.
+
+**Independent Test**: Puede probarse abriendo la Home rediseñada y verificando que un usuario operativo identifica métricas críticas, alertas y acciones principales sin navegar a otras vistas.
+
+**Acceptance Scenarios**:
+
+1. **Given** un usuario autenticado en horario de operación, **When** abre la Home, **Then** visualiza una estructura principal con resumen operativo, estado de alertas y acciones prioritarias en un orden consistente.
+2. **Given** que existen alertas activas, **When** el usuario accede a la Home, **Then** las alertas se muestran en un bloque visible con semántica de estado inequívoca (éxito, advertencia, error, informativo).
+
+---
+
+### User Story 2 - Navegación transversal coherente desde el layout base (Priority: P2)
+
+Como usuario recurrente, necesito que la Home herede un layout consistente desde la base de la aplicación para orientarme y moverme por el sistema sin fricción.
+
+**Why this priority**: La consistencia de navegación reduce errores de uso y acelera la adopción del rediseño.
+
+**Independent Test**: Puede probarse validando que la Home usa estructura y zonas compartidas de layout, incluyendo navegación lateral/superior y zona de mensajes, sin romper la experiencia global.
+
+**Acceptance Scenarios**:
+
+1. **Given** que la aplicación carga correctamente, **When** el usuario entra a la Home, **Then** el layout conserva navegación y estructura compartida alineada con el resto de pantallas.
+2. **Given** un mensaje global de sistema, **When** se renderiza la Home, **Then** el mensaje aparece en la zona definida para feedback global sin superponerse al contenido crítico.
+
+---
+
+### User Story 3 - Componentes reutilizables y consistentes (Priority: P3)
+
+Como equipo de producto, necesitamos que los componentes compartidos de la Home tengan reglas visuales reutilizables para mantener consistencia en futuras iteraciones.
+
+**Why this priority**: Disminuye retrabajo y evita divergencias visuales entre módulos.
+
+**Independent Test**: Puede probarse renderizando la Home con variantes de estado y confirmando que los componentes reutilizados conservan estructura, jerarquía y comportamiento visual consistente.
+
+**Acceptance Scenarios**:
+
+1. **Given** distintos estados de datos de Home, **When** se renderizan tarjetas, badges, alertas y accesos rápidos, **Then** los componentes mantienen formato consistente y legible.
+2. **Given** que se actualiza contenido en Home, **When** se reutilizan los componentes compartidos, **Then** no se requieren estilos ad hoc fuera del sistema visual establecido.
+
+---
+
+### Edge Cases
+
+- ¿Qué ocurre cuando la Home no tiene datos operativos (estado vacío)? Debe mostrarse un estado vacío explícito con mensaje claro y acción sugerida.
+- ¿Cómo se comporta la Home cuando hay múltiples alertas simultáneas de distinta severidad? Debe preservar prioridad visual y legibilidad sin ocultar alertas críticas.
+- ¿Qué sucede cuando el contenido supera el alto visible inicial? Debe mantenerse jerarquía visual y accesibilidad de navegación en el primer scroll.
+- ¿Qué sucede si falta temporalmente un bloque secundario de información? El layout debe mantenerse estable sin romper el flujo principal.
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: El sistema DEBE rediseñar la Home principal para mejorar claridad operativa y priorización visual de información crítica.
+- **FR-002**: El alcance DEBE incluir la actualización de la vista principal existente `app/templates/pages/dashboard.html` como punto de entrada de Home (archivo real en el workspace; no se crea ni renombra archivo).
+- **FR-003**: El alcance DEBE incluir la actualización de `base.html` para asegurar consistencia estructural de layout y zonas de navegación/feedback aplicables a Home.
+- **FR-004**: El alcance DEBE incluir revisión y actualización de componentes compartidos en `app/templates/components/` usados por la Home para garantizar reutilización y consistencia.
+- **FR-005**: El alcance DEBE incluir ajuste de `app/static/css/app.css` para reflejar el rediseño únicamente mediante el sistema visual canónico autorizado.
+- **FR-006**: El sistema DEBE mantener, sin sustituciones implícitas, los tokens visuales canónicos definidos en `.github/instructions/frontend.instructions.md` salvo autorización explícita dentro de esta spec y trazabilidad posterior en `tasks.md`.
+- **FR-007**: El sistema NO DEBE introducir paletas alternativas, hardcodes de color, ni cambios ad hoc de espaciado, tipografía, radios o sombras fuera de la gobernanza visual vigente.
+- **FR-008**: La Home DEBE contemplar estados visibles de vacío, éxito y error mediante datos de muestra hardcodeados directamente en `dashboard.html`; no se requiere modificar el route handler ni introducir consultas a base de datos en esta iteración. Los estados se demuestran con contenido estático en la revisión funcional. Los bloques de estado vacío y error se señalizan con comentarios HTML (`<!-- TODO: estado-vacio -->`, `<!-- TODO: estado-error -->`) que marcan el punto exacto de implementación; el renderizado condicional real se defiere a una spec posterior.
+- **FR-009**: La navegación principal y acciones primarias de Home DEBEN ser identificables en la primera vista sin requerir interacción adicional.
+- **FR-011**: La Home DEBE estructurarse en el siguiente orden vertical de secciones: (1) fila de tarjetas-métricas (`_tarjeta_metrica.html`), (2) bloque de alertas (`_alerta.html`), (3) accesos rápidos (`_accesos_rapidos.html`), (4) tarjetas de contenido de apoyo (`_card_propiedad.html` u otros). Este orden es canónico y no debe invertirse ni reordenarse sin enmienda de spec.
+- **FR-012**: Los enlaces del componente `_accesos_rapidos.html` DEBEN usar `href="#"` como destino placeholder. Las rutas reales se definirán en specs futuras cuando los módulos destino existan; no se DEBEN inventar ni hardcodear rutas inexistentes.
+- **FR-010**: La especificación DEBE dejar trazabilidad de autorización de cambios visuales y mapeo verificable hacia tareas de implementación.
+
+## Visual Tokens Governance *(mandatory)*
+
+- **Token Impact**: Sin cambios de paleta canónica en esta spec; se permite únicamente reordenar y aplicar tokens existentes. Cualquier modificación de tokens requerirá enmienda explícita de esta spec antes de implementación.
+- **Explicit Authorization**: Esta spec autoriza el rediseño visual de Home solo bajo reutilización estricta de tokens canónicos definidos en `.github/instructions/frontend.instructions.md` y gobernanza de `.specify/memory/constitution.md` (Principio VIII).
+- **Task Traceability**: Se exigirá en `tasks.md` trazabilidad explícita por bloque funcional, como mínimo: `T003-HOME-01` (dashboard.html/home), `T003-HOME-02` (base layout), `T003-HOME-03` (componentes compartidos), `T003-HOME-04` (app.css sin variación de tokens), `T003-HOME-05` (verificación VTG).
+- **Operational Source**: `.github/instructions/frontend.instructions.md` es la fuente operativa obligatoria de definición y uso de tokens visuales.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: Al menos 90% de usuarios de prueba identifica métricas clave, alertas y acción primaria de Home en menos de 20 segundos en primera vista.
+- **SC-002**: En pruebas de recorrido principal, al menos 95% de usuarios completa una acción operativa iniciada desde Home en menos de 3 minutos.
+- **SC-003**: El 100% de componentes compartidos usados por Home respeta estilos del sistema visual canónico sin estilos ad hoc fuera de `app.css`.
+- **SC-004**: Verificación de revisión UI confirma 0 desviaciones de la paleta/tokens canónicos autorizados para esta spec.
+- **SC-005**: El rediseño de Home contempla y demuestra estados de carga, vacío, éxito y error con contenido explícito en revisión funcional.
+- **SC-006**: El 100% de cambios visuales de Home queda mapeado a tareas trazables en `tasks.md` antes de iniciar implementación.
+
+## Clarifications
+
+### Session 2026-07-09
+
+- Q: El workspace tiene `dashboard.html` pero la spec referenciaba `index.html` como Home. ¿Cuál es el archivo real a actualizar? → A: Actualizar `dashboard.html` como Home sin renombrar; spec corregida para reflejar nombre real.
+- Q: ¿Cuál es la estructura de layout de la Home (orden de secciones)? → A: Orden top-down canónico: (1) fila tarjetas-métricas, (2) bloque alertas, (3) accesos rápidos, (4) tarjetas de contenido de apoyo.
+- Q: ¿Los datos mostrados en Home son estáticos/hardcoded o vienen de backend? → A: 100% hardcodeados en el template; no se modifica el route handler ni se introducen consultas DB en esta iteración.
+- Q: ¿A qué rutas apuntan los accesos rápidos de `_accesos_rapidos.html`? → A: `href="#"` placeholder en todos; rutas reales se definen en specs futuras cuando existan los módulos destino.
+- Q: ¿Cómo se implementan los estados vacío/error en el template? → A: Comentarios HTML (`<!-- TODO: estado-vacio -->`, `<!-- TODO: estado-error -->`) que marcan el punto de implementación; renderizado condicional diferido a spec posterior.
+
+## Assumptions
+
+- La Home principal es `app/templates/pages/dashboard.html`, archivo existente en el workspace. No se crea ni renombra ningún archivo de vista; el rediseño actualiza este archivo directamente.
+- No se requiere alterar reglas de negocio ni contratos backend para este rediseño; el alcance es de experiencia y presentación. Los datos mostrados en la Home son de muestra y se representan como valores estáticos hardcodeados en el template `dashboard.html`; no se modifica ningún route handler en esta iteración.
+- La arquitectura de layout compartido con `base.html` se conserva y se ajusta sin introducir estructuras paralelas.
+- Los componentes en `app/templates/components/` existentes son la base de reutilización y se prioriza evolución sobre reemplazo total.
+- No se autoriza cambio de tokens canónicos en esta iteración; cualquier excepción deberá formalizarse mediante actualización aprobada de spec y tareas.

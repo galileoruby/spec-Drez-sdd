@@ -247,6 +247,42 @@ input {
   font-weight: 600;
 }
 
+.tarjeta-metrica__tendencia {
+  font-size: 13px;
+  margin-top: var(--space-1);
+}
+
+.tarjeta-metrica__tendencia--positiva {
+  color: var(--color-success);
+}
+
+.tarjeta-metrica__tendencia--negativa {
+  color: var(--color-danger);
+}
+
+.tarjeta-metrica__tendencia--neutra {
+  color: var(--color-text-muted);
+}
+
+.seccion-alertas {
+}
+
+.tarjetas-contenido {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.estado-vacio--bloque {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-6);
+  color: var(--color-text-muted);
+  gap: var(--space-3);
+}
+
 .accesos-rapidos {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -358,23 +394,23 @@ input {
 }
 
 .badge-estado--success {
-  background: #def7ec;
-  color: #046c4e;
+  background: color-mix(in srgb, var(--color-success) 18%, var(--color-bg));
+  color: var(--color-success);
 }
 
 .badge-estado--warning {
-  background: #fdf6b2;
-  color: #8e4b10;
+  background: color-mix(in srgb, var(--color-warning) 18%, var(--color-bg));
+  color: var(--color-warning);
 }
 
 .badge-estado--danger {
-  background: #fde8e8;
-  color: #9b1c1c;
+  background: color-mix(in srgb, var(--color-danger) 18%, var(--color-bg));
+  color: var(--color-danger);
 }
 
 .badge-estado--info {
-  background: #e1effe;
-  color: #1e429f;
+  background: color-mix(in srgb, var(--color-info) 18%, var(--color-bg));
+  color: var(--color-info);
 }
 
 .card-propiedad {
@@ -475,6 +511,10 @@ input {
   }
 
   .accesos-rapidos__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tarjetas-contenido {
     grid-template-columns: 1fr;
   }
 

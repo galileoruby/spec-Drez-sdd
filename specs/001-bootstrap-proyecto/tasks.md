@@ -1,6 +1,6 @@
 # Tasks: 001-bootstrap-proyecto
 
-**Input**: Documentos de diseño desde `.specify/specs/001-bootstrap-proyecto/`
+**Input**: Documentos de diseño desde `specs/001-bootstrap-proyecto/`
 
 **Prerequisites**: `plan.md` (requerido), `spec.md` (requerido), `research.md`, `data-model.md`, `contracts/http-endpoints.md`, `quickstart.md`
 
@@ -96,7 +96,7 @@
 - [x] T031 [US3] Configurar MyPy strict para `app/modules/` en `pyproject.toml`
 - [x] T032 [US3] Configurar pytest-asyncio con `asyncio_mode = "auto"` en `pyproject.toml`
 - [x] T033 [US3] Revisar configuración de Alembic para compatibilidad con Supabase en `alembic/env.py` y `alembic/versions/20260708_baseline.py`
-- [x] T034 [US3] Actualizar guía de validación operativa en `.specify/specs/001-bootstrap-proyecto/quickstart.md`
+- [x] T034 [US3] Actualizar guía de validación operativa en `specs/001-bootstrap-proyecto/quickstart.md`
 
 **Checkpoint**: Base técnica validable para iniciar specs de dominio.
 
@@ -106,8 +106,8 @@
 
 **Purpose**: Cerrar coherencia documental y validación final transversal.
 
-- [x] T035 [P] Verificar consistencia spec-plan-tasks y actualizar notas en `.specify/specs/001-bootstrap-proyecto/spec.md` y `.specify/specs/001-bootstrap-proyecto/plan.md`
-- [x] T036 Ejecutar checklist de aceptación técnica y dejar evidencia en `.specify/specs/001-bootstrap-proyecto/quickstart.md`
+- [x] T035 [P] Verificar consistencia spec-plan-tasks y actualizar notas en `specs/001-bootstrap-proyecto/spec.md` y `specs/001-bootstrap-proyecto/plan.md`
+- [x] T036 Ejecutar checklist de aceptación técnica y dejar evidencia en `specs/001-bootstrap-proyecto/quickstart.md`
 
 ---
 

@@ -73,9 +73,18 @@ async def test_get_root_dashboard_demo() -> None:
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     assert "Navegacion principal" in response.text
-    assert "Propiedades activas" in response.text
-    assert "12" in response.text
-    assert "Contratos vigentes" in response.text
-    assert "9" in response.text
-    assert "Ingresos del mes" in response.text
-    assert "$8,750" in response.text
+    assert "Propiedades" in response.text
+    assert "24" in response.text
+    assert "Contratos activos" in response.text
+    assert "18" in response.text
+    assert "Pagos pendientes" in response.text
+    assert "5" in response.text
+    assert "+3 este mes" in response.text
+    assert "-2 desde ayer" in response.text
+    assert "Sistema operando con normalidad. Proxima revision: 15 jul." in response.text
+    assert "Apto. Reforma 12A" in response.text
+    assert "Casa Polanco" in response.text
+    assert "Local Condesa" in response.text
+    assert response.text.count('id="flash-zone"') == 1
+    assert response.text.count("<!-- TODO: estado-vacio -->") == 2
+    assert response.text.count("<!-- TODO: estado-error -->") == 1
