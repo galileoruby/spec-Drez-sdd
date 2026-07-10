@@ -74,7 +74,7 @@ reserva exclusivamente para infraestructura de spec-kit (`memory/`,
 ## Flujo Speckit — hooks obligatorios
 
 <!-- SPECKIT START -->
-Plan activo de ejecución: specs/003-redisenar-home/plan.md
+Plan activo de ejecución: specs/004-propiedades-base/plan.md
 <!-- SPECKIT END -->
 
 Antes de ejecutar cualquier comando `speckit.*`, el agente DEBE revisar
