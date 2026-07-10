@@ -1,22 +1,27 @@
 <!--
 Sync Impact Report
-- Version change: 1.2.0 -> 2.0.0
+- Version change: 1.2.0 -> 2.0.0 (MAJOR)
+- Motivo del bump MAJOR: cambio de gobernanza estructural que reubica los
+  artefactos de feature desde `.specify/specs/` (ruta interna) a `specs/`
+  (raíz del repo), alineando la constitución con la convención upstream de
+  spec-kit. Se reasignan responsabilidades de directorios existentes.
 - Principios modificados:
-  - II. Spec-Driven Development (NO NEGOCIABLE)
+  - II. Spec-Driven Development (clarificación de ubicación de specs)
 - Secciones agregadas:
-  - Estructura de .specify/
-  - Gobierno: Precedencia ante conflictos con scripts upstream de spec-kit
-  - Gobierno: Cláusula operativa para agentes
+  - "Estructura de `.specify/`" (nueva, dentro de Estructura del Repositorio)
+  - Cláusulas de "Precedencia ante conflictos con upstream spec-kit" y
+    "Protocolo del agente ante divergencias" (en Gobierno)
+- Secciones modificadas:
+  - Estructura del Repositorio: ruta canónica de specs cambia a `specs/`
 - Secciones eliminadas:
   - Ninguna
-- Templates que requieren actualización:
-  - ✅ .specify/templates/spec-template.md (sin cambio requerido tras validación)
-  - ✅ .specify/templates/plan-template.md (sin cambio requerido tras validación)
-  - ✅ .specify/templates/tasks-template.md (sin cambio requerido tras validación)
-  - ✅ .specify/templates/commands/*.md (sin archivos en esta ruta)
-  - ✅ .github/copilot-instructions.md (actualizado)
+- Templates requiring updates:
+  - ⚠ pending review: `.specify/templates/spec-template.md` (verificar rutas)
+  - ⚠ pending review: `.specify/templates/plan-template.md` (verificar rutas)
+  - ⚠ pending review: `.specify/templates/tasks-template.md` (verificar rutas)
+  - ⚠ pending review: scripts en `.specify/scripts/` que asuman `.specify/specs/`
 - TODOs de seguimiento:
-  - Ninguno
+  - Migrar cualquier spec residual en `.specify/specs/` a `specs/` (si existe).
 -->
 
 # Realtor Constitution
@@ -33,22 +38,14 @@ divergentes por capa técnica. La solución se compila, prueba y despliega como
 una sola unidad.
 
 ### II. Spec-Driven Development (NO NEGOCIABLE)
-La carpeta raíz `specs/` es la ubicación canónica de artefactos de feature.
-NO se DEBE implementar ninguna funcionalidad que no esté descrita en el
-`spec.md` vigente dentro de `specs/<numero>-<nombre>/`. El orden de
+Las **specs aprobadas en `specs/`** (carpeta en la raíz del repositorio) son
+la **única fuente de verdad** del proyecto. NO se DEBE implementar ninguna
+funcionalidad que no esté descrita en el `spec.md` vigente. El orden de
 implementación lo define el **prefijo numérico** de cada spec: el número menor
 SIEMPRE se implementa antes que el mayor. Cualquier código, template o
 migración que no rastree a una tarea en `tasks.md` de una spec aprobada DEBE
-rechazarse en revisión.
-
-Cada feature en `specs/<numero>-<nombre>/` DEBE centralizar sus artefactos en
-esta estructura canónica: `spec.md`, `plan.md`, `tasks.md`, `research.md`,
-`data-model.md`, `contracts/`, `quickstart.md` y `checklists/`.
-
-Para cambios de diseño visual, especialmente tokens visuales (color,
-espaciado, tipografía, radios, sombras y derivados), la spec DEBE incluir
-autorización explícita del cambio y trazabilidad completa en `tasks.md`.
-Sin autorización explícita y tareas trazables, el cambio DEBE rechazarse.
+rechazarse en revisión. La carpeta `.specify/` NO contiene specs de feature
+(ver sección "Estructura de `.specify/`").
 
 ### III. Vertical Slice Architecture (NO NEGOCIABLE)
 El código de negocio DEBE organizarse por feature/módulo, NO por capa técnica.
@@ -97,6 +94,10 @@ El stack es inmutable y DEBE aplicarse sin excepción:
   (Bootstrap Icons, Font Awesome, Material Icons font), emojis o caracteres
   Unicode como íconos funcionales. Cada nuevo icono incorporado al proyecto
   DEBE rastrearse a una tarea explícita en el `tasks.md` de una spec aprobada.
+- **Tokens visuales**: cualquier cambio en tokens visuales (colores,
+  tipografía, espaciados, radios, sombras o variables CSS equivalentes)
+  REQUIERE autorización explícita previa y trazabilidad en `tasks.md` de la
+  spec activa. Sin ambos requisitos, el cambio DEBE rechazarse en revisión.
 
 Cualquier dependencia adicional DEBE justificarse en el `plan.md` de la spec
 que la introduce.
@@ -131,14 +132,6 @@ o `repository.py` cuando la función toque I/O. Solo se permite `def` síncrono
 para **puro cómputo en memoria** (mapeos, cálculos, validaciones sin I/O). Las
 sesiones de base de datos DEBEN ser `AsyncSession`; los clientes HTTP DEBEN ser
 `httpx.AsyncClient` u otro cliente async equivalente.
-
-### VIII. Gobernanza de Tokens Visuales
-Los tokens visuales del sistema (variables CSS de color, espaciado, tipografía,
-radios, sombras y equivalentes) son activos gobernados. Cualquier cambio en
-tokens visuales DEBE tener autorización explícita en una spec aprobada y DEBE
-quedar trazado a tareas verificables en `tasks.md` antes de su implementación.
-No se permite modificar tokens por conveniencia local, ajuste ad hoc o criterio
-estético aislado sin ese rastro formal.
 
 ---
 
@@ -182,38 +175,38 @@ pyproject.toml                # Gestionado por uv
 uv.lock
 ```
 
-`specs/` se mantiene como **lista secuencial plana** de iniciativas.
-Cada spec vive en `specs/<numero>-<nombre>/` y contiene como mínimo `spec.md`,
-`plan.md` y `tasks.md`, además de los artefactos complementarios definidos en
-esta constitución. NO se separan specs en subcarpetas por capa.
+`specs/` (en la **raíz del repositorio**) se mantiene como **lista secuencial
+plana** de iniciativas. Cada spec vive en `specs/<numero>-<nombre>/` y
+contiene los artefactos de feature: `spec.md`, `plan.md`, `tasks.md`,
+`research.md`, `data-model.md`, `quickstart.md`, `contracts/` y `checklists/`
+(según corresponda al flujo speckit aplicado). NO se separan specs en
+subcarpetas por capa.
 
 ### Estructura de `.specify/`
 
-`.specify/` se reserva EXCLUSIVAMENTE para infraestructura de spec-kit. Su uso
-admitido se limita a: `memory/`, `scripts/`, `templates/`, `extensions.yml` y
-`feature.json` (además de archivos internos equivalentes generados por
-upstream). Está PROHIBIDO usar `.specify/` para almacenar artefactos de
-features.
+La carpeta `.specify/` se reserva **EXCLUSIVAMENTE** para infraestructura del
+flujo spec-kit y DEBE contener únicamente:
 
-Está estrictamente PROHIBIDO crear `.specify/specs/`. Si esta ruta existe, se
-considera defecto crítico de gobernanza y DEBE eliminarse mediante acción
-correctiva explícita.
+- `memory/` — constitución y memoria persistente del proyecto.
+- `scripts/` — scripts de soporte de spec-kit.
+- `templates/` — plantillas de spec, plan, tasks, etc.
+- `extensions.yml` — configuración de hooks de spec-kit.
+- `feature.json` — estado de la feature activa (apuntando a `specs/<NNN>-...`).
+
+Está **PROHIBIDO** crear `.specify/specs/`. Si esa carpeta existiera, se
+considera **defecto crítico de gobernanza** y DEBE eliminarse migrando su
+contenido a `specs/` antes de continuar cualquier trabajo.
 
 ---
 
 ## Método de Trabajo
 
-Cada iniciativa DEBE contener, como mínimo, estos tres archivos obligatorios:
+Cada iniciativa DEBE contener exactamente tres archivos:
 
 - `spec.md` — objetivo, alcance, criterios de aceptación y dependencias.
 - `plan.md` — decisiones técnicas, módulos afectados y orden de implementación.
 - `tasks.md` — pasos secuenciales, accionables y verificables, marcables como
   completados.
-
-Cuando aplique por alcance de la feature, también DEBE incluir artefactos
-complementarios en el mismo directorio de `specs/<numero>-<nombre>/`
-(`research.md`, `data-model.md`, `contracts/`, `quickstart.md`,
-`checklists/`).
 
 El flujo obligatorio mínimo es: speckit.specify → speckit.plan →
 speckit.tasks → speckit.implement. Para specs fundacionales o de alto
@@ -305,26 +298,42 @@ documentarse con nueva versión semántica:
   principio existente.
 - **PATCH**: aclaraciones, redacción o correcciones no semánticas.
 
-Toda PR o revisión DEBE verificar el cumplimiento de los **ocho principios
-(I al VIII)** antes de aprobarse. Cualquier violación DEBE justificarse
+Toda PR o revisión DEBE verificar el cumplimiento de los **siete principios
+(I al VII)** antes de aprobarse. Cualquier violación DEBE justificarse
 explícitamente en la sección **Complexity Tracking** del `plan.md` de la
 iniciativa correspondiente; en ausencia de justificación, la PR DEBE
 rechazarse.
 
-### Precedencia ante conflictos con scripts upstream de spec-kit
+### Precedencia ante conflictos con upstream spec-kit
 
-Cuando un script, hook, plantilla o `feature.json` de spec-kit entre en
-conflicto con esta constitución respecto a rutas físicas, el comportamiento
-upstream tiene autoridad operativa y la constitución DEBE alinearse. Está
-PROHIBIDO "armonizar" moviendo artefactos hacia rutas no canónicas o
-parcheando scripts upstream para satisfacer convenciones locales.
+Cuando un script, hook, plantilla o `feature.json` provisto por spec-kit
+upstream entre en conflicto con esta constitución sobre **rutas físicas** de
+artefactos (ubicación de specs, nombres de carpetas, estructura de
+`.specify/`), el **comportamiento upstream tiene autoridad** y la constitución
+DEBE alinearse con él en una próxima enmienda.
 
-### Cláusula operativa para agentes
+Está **PROHIBIDO** al agente "armonizar" el conflicto moviendo artefactos
+hacia rutas no canónicas, ni parchear scripts upstream para satisfacer
+convenciones locales. Toda divergencia se resuelve por enmienda explícita de
+esta constitución, no por edición silenciosa de scripts ni por reubicación
+de archivos.
+
+### Protocolo del agente ante divergencias
 
 Si un agente detecta divergencia entre un script de spec-kit y esta
-constitución, DEBE detenerse y reportar el conflicto al humano antes de actuar.
-Está PROHIBIDO mover archivos por iniciativa propia para resolver la
-divergencia.
+constitución (por ejemplo: el script crea o busca artefactos en una ruta
+distinta a la declarada aquí), el agente DEBE:
+
+1. **Detenerse inmediatamente** y NO ejecutar el comando que provocaría la
+   divergencia.
+2. **Reportar al humano** la naturaleza exacta del conflicto, citando la
+   sección relevante de la constitución y la línea relevante del script.
+3. **Esperar instrucción explícita** antes de continuar.
+
+Está **PROHIBIDO** al agente mover archivos por iniciativa propia, renombrar
+carpetas, o editar scripts/templates upstream para resolver el conflicto. La
+única resolución legítima es la decisión humana documentada vía enmienda
+constitucional o ajuste de la convención local.
 
 ---
 ## Sistema Visual Canonico
@@ -335,18 +344,25 @@ Toda variación de tokens requiere spec aprobada, actualización de instruccione
 El incumplimiento de esta regla invalida la implementación de la spec en revisión.
 
 ---
-
-
 ## Historial de versiones
 - **v1.0.0** — Versión inicial de la constitution.
 - **v1.1.0** — Agregado protocolo de Modo Interactivo de Preguntas en
   Método de Trabajo. Define formato, reglas de opciones y reglas de
   respuesta para speckit.specify, speckit.clarify y speckit.plan.
-- **v1.2.0** — Se agrega gobernanza global de tokens visuales: autorización
-  explícita en spec aprobada y trazabilidad obligatoria en `tasks.md`.
-- **v2.0.0** — 2026-05-14. Cambio mayor de gobernanza estructural para alinear
-  rutas canónicas con upstream spec-kit: los artefactos de feature pasan a
-  `specs/<numero>-<nombre>/` en la raíz del repositorio y se prohíbe
-  `.specify/specs/`. Motivado por conflicto detectado durante la spec
-  `003-redisenar-home`.
+- **v1.2.0** — Se blinda la gobernanza de tokens visuales: cualquier cambio
+  en tokens requiere autorización explícita y trazabilidad obligatoria en
+  `tasks.md` de la spec activa.
+- **v2.0.0** — 2026-05-14 — Alineación con la convención upstream de
+  spec-kit tras detectar conflicto en la spec `003-redisenar-home`: la ruta
+  canónica de specs pasa de `.specify/specs/<NNN>-<nombre>/` a
+  `specs/<NNN>-<nombre>/` (raíz del repo). Se reserva `.specify/`
+  exclusivamente para infraestructura de spec-kit (`memory/`, `scripts/`,
+  `templates/`, `extensions.yml`, `feature.json`) y se prohíbe crear
+  `.specify/specs/`. Se añaden cláusulas de precedencia upstream y de
+  protocolo del agente ante divergencias: ningún agente puede mover
+  artefactos por iniciativa propia ni parchear scripts upstream para
+  satisfacer convenciones locales; toda divergencia se reporta al humano y
+  se resuelve por enmienda constitucional. Bump MAJOR por reubicación de
+  artefactos existentes y redefinición de la responsabilidad de
+  `.specify/`.
 
