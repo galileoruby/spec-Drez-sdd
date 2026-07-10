@@ -4,13 +4,6 @@
 {% block title %}Dashboard | Realtor{% endblock %}
 
 {% block content %}
-  {# DEMO: datos de muestra hardcodeados. Reemplazar con contexto de route en spec futura. #}
-  {% set metricas = [
-    {"titulo": "Propiedades", "valor": "24", "icono": "building-2", "tendencia": "+3 este mes"},
-    {"titulo": "Contratos activos", "valor": "18", "icono": "file-text", "tendencia": ""},
-    {"titulo": "Pagos pendientes", "valor": "5", "icono": "wallet", "tendencia": "-2 desde ayer"},
-  ] %}
-
   <div class="layout-dashboard">
     {% include "components/_sidebar.html" %}
 
@@ -24,11 +17,18 @@
       </section>
 
       <section class="seccion-alertas" aria-label="Alertas del sistema">
-        {% set alerta_demo = {"tipo": "info", "mensaje": "Sistema operando con normalidad. Proxima revision: 15 jul."} %}
-        {% with tipo=alerta_demo.tipo, mensaje=alerta_demo.mensaje %}
+        {% if mostrar_estado_vacio %}
+          {% with tipo='warning', mensaje='No hay propiedades disponibles o rentadas para mostrar metricas operativas.' %}
+            {% include "components/_alerta.html" %}
+          {% endwith %}
+        {% else %}
+          {% with tipo='info', mensaje='Metricas operativas actualizadas desde datos persistidos.' %}
+            {% include "components/_alerta.html" %}
+          {% endwith %}
+        {% endif %}
+        {% with tipo='info', mensaje='Ingresos y vencidos permanecen en modo no operativo en esta iteracion.' %}
           {% include "components/_alerta.html" %}
         {% endwith %}
-        <!-- TODO: estado-vacio -->
         <!-- TODO: estado-error -->
       </section>
 

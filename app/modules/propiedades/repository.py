@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sqlalchemy import Select, select
+from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.propiedades.models import EstadoPropiedad, Propiedad
@@ -51,3 +51,27 @@ def _select_base() -> Select[tuple[Propiedad]]:
     """Retorna un select base para reutilizar filtros."""
 
     return select(Propiedad)
+
+
+async def contar_operativas_por_estado(
+    session: AsyncSession,
+) -> dict[EstadoPropiedad, int]:
+    """Retorna conteos de propiedades disponibles y rentadas."""
+
+    conteos: dict[EstadoPropiedad, int] = {
+        EstadoPropiedad.DISPONIBLE: 0,
+        EstadoPropiedad.RENTADA: 0,
+    }
+    estados_objetivo = [EstadoPropiedad.DISPONIBLE, EstadoPropiedad.RENTADA]
+
+    stmt = (
+        select(Propiedad.estado, func.count(Propiedad.id))
+        .where(Propiedad.estado.in_(estados_objetivo))
+        .group_by(Propiedad.estado)
+    )
+    result = await session.execute(stmt)
+
+    for estado, total in result.all():
+        conteos[estado] = int(total)
+
+    return conteos

@@ -25,6 +25,8 @@ estado_propiedad_enum = Enum(
     EstadoPropiedad,
     name="estado_propiedad",
     create_type=False,
+    values_callable=lambda enum_cls: [item.value for item in enum_cls],
+    validate_strings=True,
 )
 
 

@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Request
-from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from markupsafe import Markup, escape
@@ -16,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.database import get_session
+from app.modules.dashboard.routes import router as dashboard_router
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
@@ -23,13 +23,6 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 
 logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL, logging.INFO))
-
-
-METRICAS_DASHBOARD = [
-    {"titulo": "Propiedades activas", "valor": "12", "icono": "building-2"},
-    {"titulo": "Contratos vigentes", "valor": "9", "icono": "file-text"},
-    {"titulo": "Ingresos del mes", "valor": "$8,750", "icono": "wallet"},
-]
 
 
 def icon_svg(nombre: str, size: int = 20, class_name: str = "") -> Markup:
@@ -74,6 +67,7 @@ def create_app() -> FastAPI:
         StaticFiles(directory=str(BASE_DIR / "static")),
         name="static",
     )
+    app.include_router(dashboard_router)
 
     @app.middleware("http")
     async def request_logger(request: Request, call_next):
@@ -105,14 +99,6 @@ def create_app() -> FastAPI:
         except Exception:
             return {"status": "degraded", "db": "error"}
         return {"status": "ok", "db": "ok"}
-
-    @app.get("/", response_class=HTMLResponse)
-    async def home(request: Request) -> HTMLResponse:
-        return templates.TemplateResponse(
-            request=request,
-            name="pages/dashboard.html",
-            context={"metricas": METRICAS_DASHBOARD},
-        )
 
     return app
 

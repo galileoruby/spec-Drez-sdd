@@ -6,6 +6,8 @@ from collections.abc import AsyncIterator
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from app.modules.propiedades.models import EstadoPropiedad
+
 os.environ.setdefault(
     "DATABASE_URL",
     "postgresql+asyncpg://postgres.test:pass@localhost:6543/postgres",
@@ -29,12 +31,47 @@ class _FakeSessionError:
         raise RuntimeError("db error")
 
 
+class _FakeCountResult:
+    def __init__(self, rows):
+        self._rows = rows
+
+    def all(self):
+        return self._rows
+
+
+class _FakeSessionHomeConDatos:
+    async def execute(self, query):
+        if "SELECT 1" in str(query):
+            return None
+        return _FakeCountResult(
+            [
+                (EstadoPropiedad.DISPONIBLE, 24),
+                (EstadoPropiedad.RENTADA, 18),
+            ]
+        )
+
+
+class _FakeSessionHomeSinDatos:
+    async def execute(self, query):
+        if "SELECT 1" in str(query):
+            return None
+        return _FakeCountResult([])
+
+
 async def _override_session_ok() -> AsyncIterator[_FakeSessionOk]:
     yield _FakeSessionOk()
 
 
 async def _override_session_error() -> AsyncIterator[_FakeSessionError]:
     yield _FakeSessionError()
+
+
+async def _override_session_home_con_datos() -> AsyncIterator[_FakeSessionHomeConDatos]:
+    yield _FakeSessionHomeConDatos()
+
+
+async def _override_session_home_sin_datos() -> AsyncIterator[_FakeSessionHomeSinDatos]:
+    yield _FakeSessionHomeSinDatos()
 
 
 @pytest.mark.asyncio
@@ -65,6 +102,7 @@ async def test_get_health_degraded() -> None:
 
 @pytest.mark.asyncio
 async def test_get_root_dashboard_demo() -> None:
+    app.dependency_overrides[get_session] = _override_session_home_con_datos
     transport = ASGITransport(app=app)
 
     async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -73,18 +111,39 @@ async def test_get_root_dashboard_demo() -> None:
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     assert "Navegacion principal" in response.text
-    assert "Propiedades" in response.text
+    assert "Propiedades disponibles" in response.text
     assert "24" in response.text
-    assert "Contratos activos" in response.text
+    assert "Propiedades rentadas" in response.text
     assert "18" in response.text
-    assert "Pagos pendientes" in response.text
-    assert "5" in response.text
-    assert "+3 este mes" in response.text
-    assert "-2 desde ayer" in response.text
-    assert "Sistema operando con normalidad. Proxima revision: 15 jul." in response.text
+    assert "Ingresos del mes" in response.text
+    assert "Pagos vencidos" in response.text
+    assert "No operativo" in response.text
+    assert "Pendiente de modelado en spec futura" in response.text
+    assert "Metricas operativas actualizadas desde datos persistidos." in response.text
+    assert (
+        "Ingresos y vencidos permanecen en modo no operativo en esta iteracion."
+        in response.text
+    )
     assert "Apto. Reforma 12A" in response.text
     assert "Casa Polanco" in response.text
     assert "Local Condesa" in response.text
     assert response.text.count('id="flash-zone"') == 1
-    assert response.text.count("<!-- TODO: estado-vacio -->") == 2
+    assert response.text.count("<!-- TODO: estado-vacio -->") == 1
     assert response.text.count("<!-- TODO: estado-error -->") == 1
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_get_root_dashboard_muestra_estado_vacio_real() -> None:
+    app.dependency_overrides[get_session] = _override_session_home_sin_datos
+    transport = ASGITransport(app=app)
+
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/")
+
+    assert response.status_code == 200
+    assert (
+        "No hay propiedades disponibles o rentadas para mostrar metricas operativas."
+        in response.text
+    )
+    app.dependency_overrides.clear()
