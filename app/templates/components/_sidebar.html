@@ -7,11 +7,20 @@
   </div>
 
   <nav class="sidebar__nav" aria-label="Secciones">
-    <a class="sidebar__link sidebar__link--active" href="/" aria-current="page">
+    {% set path_actual = request.url.path if request is defined else '/' %}
+    <a
+      class="sidebar__link{% if path_actual == '/' %} sidebar__link--active{% endif %}"
+      href="/"
+      {% if path_actual == '/' %}aria-current="page"{% endif %}
+    >
       {{ icon("layout-dashboard", 18) }}
       <span>Dashboard</span>
     </a>
-    <a class="sidebar__link" href="#" aria-disabled="true">
+    <a
+      class="sidebar__link{% if path_actual == '/propiedades' %} sidebar__link--active{% endif %}"
+      href="/propiedades"
+      {% if path_actual == '/propiedades' %}aria-current="page"{% endif %}
+    >
       {{ icon("building-2", 18) }}
       <span>Propiedades</span>
     </a>

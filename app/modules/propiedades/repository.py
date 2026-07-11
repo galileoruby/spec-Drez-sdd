@@ -6,7 +6,20 @@ from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.propiedades.models import EstadoPropiedad, Propiedad
-from app.modules.propiedades.service import normalizar_identidad_negocio
+
+
+def _normalizar_identidad_negocio(
+    titulo: str,
+    direccion: str,
+    ciudad: str,
+) -> tuple[str, str, str]:
+    """Normaliza la identidad funcional para comparaciones deterministas."""
+
+    return (
+        " ".join(titulo.strip().split()).casefold(),
+        " ".join(direccion.strip().split()).casefold(),
+        " ".join(ciudad.strip().split()).casefold(),
+    )
 
 
 async def obtener_por_identidad_compuesta(
@@ -17,7 +30,7 @@ async def obtener_por_identidad_compuesta(
 ) -> Propiedad | None:
     """Obtiene una propiedad por su identidad de negocio compuesta."""
 
-    titulo_norm, direccion_norm, ciudad_norm = normalizar_identidad_negocio(
+    titulo_norm, direccion_norm, ciudad_norm = _normalizar_identidad_negocio(
         titulo,
         direccion,
         ciudad,
@@ -75,3 +88,11 @@ async def contar_operativas_por_estado(
         conteos[estado] = int(total)
 
     return conteos
+
+
+async def listar_para_cards(session: AsyncSession) -> list[Propiedad]:
+    """Lista propiedades para vista de cards ordenadas por fecha de creacion."""
+
+    stmt = select(Propiedad).order_by(Propiedad.created_at.desc())
+    result = await session.execute(stmt)
+    return list(result.scalars().all())

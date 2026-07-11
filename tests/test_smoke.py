@@ -2,6 +2,9 @@
 
 import os
 from collections.abc import AsyncIterator
+from decimal import Decimal
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -58,6 +61,59 @@ class _FakeSessionHomeSinDatos:
         return _FakeCountResult([])
 
 
+class _FakePropertyScalars:
+    def __init__(self, rows):
+        self._rows = rows
+
+    def all(self):
+        return self._rows
+
+
+class _FakePropertyResult:
+    def __init__(self, rows):
+        self._rows = rows
+
+    def scalars(self):
+        return _FakePropertyScalars(self._rows)
+
+
+class _FakeSessionPropiedadesConDatos:
+    async def execute(self, _query):
+        return _FakePropertyResult(
+            [
+                SimpleNamespace(
+                    id="prop-1",
+                    titulo="Penthouse Brickell con vista al mar",
+                    direccion="123 Brickell Ave",
+                    ciudad="Miami",
+                    precio_mensual=Decimal("4500"),
+                    habitaciones=3,
+                    banos=Decimal("2.5"),
+                    area_m2=Decimal("150"),
+                    estado=EstadoPropiedad.DISPONIBLE,
+                    imagen_url="https://cdn.example.com/p1.jpg",
+                ),
+                SimpleNamespace(
+                    id="prop-2",
+                    titulo="Townhouse Coral Way",
+                    direccion="456 Coral Way",
+                    ciudad="Miami",
+                    precio_mensual=Decimal("3200"),
+                    habitaciones=4,
+                    banos=Decimal("3.0"),
+                    area_m2=Decimal("205"),
+                    estado=EstadoPropiedad.RENTADA,
+                    imagen_url="imagen-invalida",
+                ),
+            ]
+        )
+
+
+class _FakeSessionPropiedadesSinDatos:
+    async def execute(self, _query):
+        return _FakePropertyResult([])
+
+
 async def _override_session_ok() -> AsyncIterator[_FakeSessionOk]:
     yield _FakeSessionOk()
 
@@ -72,6 +128,16 @@ async def _override_session_home_con_datos() -> AsyncIterator[_FakeSessionHomeCo
 
 async def _override_session_home_sin_datos() -> AsyncIterator[_FakeSessionHomeSinDatos]:
     yield _FakeSessionHomeSinDatos()
+
+
+async def _override_session_propiedades_con_datos(
+) -> AsyncIterator[_FakeSessionPropiedadesConDatos]:
+    yield _FakeSessionPropiedadesConDatos()
+
+
+async def _override_session_propiedades_sin_datos(
+) -> AsyncIterator[_FakeSessionPropiedadesSinDatos]:
+    yield _FakeSessionPropiedadesSinDatos()
 
 
 @pytest.mark.asyncio
@@ -146,4 +212,67 @@ async def test_get_root_dashboard_muestra_estado_vacio_real() -> None:
         "No hay propiedades disponibles o rentadas para mostrar metricas operativas."
         in response.text
     )
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_get_propiedades_ok_y_navegacion_sidebar() -> None:
+    app.dependency_overrides[get_session] = _override_session_propiedades_con_datos
+    transport = ASGITransport(app=app)
+
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/propiedades")
+
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+    assert 'href="/propiedades"' in response.text
+    assert "aria-current=\"page\"" in response.text
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_get_propiedades_renderiza_campos_obligatorios_de_card() -> None:
+    app.dependency_overrides[get_session] = _override_session_propiedades_con_datos
+    transport = ASGITransport(app=app)
+
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/propiedades")
+
+    assert response.status_code == 200
+    assert "card-propiedad__imagen" in response.text
+    assert "Penthouse Brickell con vista al mar" in response.text
+    assert "123 Brickell Ave, Miami" in response.text
+    assert "3 hab." in response.text
+    assert "2.5 banos" in response.text
+    assert "150 m2" in response.text
+    assert "$4,500/mes" in response.text
+    assert "Disponible" in response.text
+    assert "/static/icons/building-2.svg" in response.text
+    app.dependency_overrides.clear()
+
+
+def test_css_declara_grilla_responsive_3_2_1_para_propiedades() -> None:
+    css_path = (
+        Path(__file__).resolve().parents[1] / "app" / "static" / "css" / "app.css"
+    )
+    css = css_path.read_text(encoding="utf-8")
+
+    assert ".tarjetas-contenido" in css
+    assert "grid-template-columns: repeat(3, minmax(0, 1fr));" in css
+    assert "@media (max-width: 1023px)" in css
+    assert "grid-template-columns: repeat(2, minmax(0, 1fr));" in css
+    assert "@media (max-width: 639px)" in css
+    assert "grid-template-columns: 1fr;" in css
+
+
+@pytest.mark.asyncio
+async def test_get_propiedades_renderiza_estado_vacio() -> None:
+    app.dependency_overrides[get_session] = _override_session_propiedades_sin_datos
+    transport = ASGITransport(app=app)
+
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/propiedades")
+
+    assert response.status_code == 200
+    assert "No hay propiedades disponibles." in response.text
     app.dependency_overrides.clear()

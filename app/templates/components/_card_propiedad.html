@@ -2,12 +2,28 @@
 
 <article class="card-propiedad" aria-label="{{ propiedad.titulo if propiedad else 'Sin propiedad' }}">
   {% if propiedad %}
-    <h3 class="card-propiedad__title">{{ propiedad.titulo }}</h3>
-    <p class="card-propiedad__meta">{{ propiedad.ubicacion }}</p>
-    <div class="card-propiedad__footer">
-      {% set estado = propiedad.estado if propiedad.estado else 'Inactiva' %}
-      {% include "components/_badge_estado.html" %}
-      <span class="card-propiedad__precio">{{ propiedad.precio }}</span>
+    <div class="card-propiedad__media">
+      <img
+        class="card-propiedad__imagen"
+        src="{{ propiedad.imagen_url }}"
+        alt="Imagen de {{ propiedad.titulo }}"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div class="card-propiedad__contenido">
+      <h3 class="card-propiedad__title card-propiedad__truncate-2">{{ propiedad.titulo }}</h3>
+      <p class="card-propiedad__meta card-propiedad__truncate-2">{{ propiedad.direccion }}</p>
+      <ul class="card-propiedad__detalles" aria-label="Detalle de la propiedad">
+        <li>{{ icon("bed-double", 16) }} {{ propiedad.habitaciones }} hab.</li>
+        <li>{{ icon("bath", 16) }} {{ propiedad.banos }} banos</li>
+        <li>{{ icon("ruler", 16) }} {{ propiedad.area_m2 }}</li>
+      </ul>
+      <div class="card-propiedad__footer">
+        {% set estado = propiedad.estado if propiedad.estado else 'Inactiva' %}
+        {% include "components/_badge_estado.html" %}
+        <span class="card-propiedad__precio">{{ propiedad.precio_renta }}</span>
+      </div>
     </div>
   {% else %}
     <div class="estado-vacio">

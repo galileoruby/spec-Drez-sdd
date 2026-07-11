@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import get_settings
 from app.database import get_session
 from app.modules.dashboard.routes import router as dashboard_router
+from app.modules.propiedades.routes import router as propiedades_router
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
@@ -68,6 +69,7 @@ def create_app() -> FastAPI:
         name="static",
     )
     app.include_router(dashboard_router)
+    app.include_router(propiedades_router)
 
     @app.middleware("http")
     async def request_logger(request: Request, call_next):

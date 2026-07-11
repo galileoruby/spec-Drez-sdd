@@ -273,6 +273,22 @@ input {
   gap: var(--space-4);
 }
 
+.tarjetas-contenido--propiedades {
+  align-items: stretch;
+}
+
+.propiedades-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.propiedades-header__total {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
 .estado-vacio--bloque {
   display: flex;
   flex-direction: column;
@@ -417,7 +433,10 @@ input {
   background: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-4);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  min-height: 430px;
 }
 
 .card-propiedad__meta,
@@ -425,8 +444,48 @@ input {
   color: var(--color-text-muted);
 }
 
+.card-propiedad__imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-bottom: 1px solid var(--color-border);
+  background: #f8fafc;
+}
+
+.card-propiedad__contenido {
+  min-height: 0;
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+.card-propiedad__detalles {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.card-propiedad__detalles li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-propiedad__truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .card-propiedad__footer {
-  margin-top: var(--space-4);
+  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -515,7 +574,7 @@ input {
   }
 
   .tarjetas-contenido {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .navbar {
@@ -526,5 +585,32 @@ input {
   .navbar__right {
     width: 100%;
     justify-content: flex-start;
+  }
+
+  .card-propiedad__detalles {
+    grid-template-columns: 1fr;
+  }
+
+  .card-propiedad {
+    min-height: 400px;
+}
+
+@media (max-width: 639px) {
+  .main-content {
+    width: 100%;
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .tarjetas-contenido {
+    grid-template-columns: 1fr;
+  }
+
+  .propiedades-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .card-propiedad {
+    min-height: 360px;
   }
 }

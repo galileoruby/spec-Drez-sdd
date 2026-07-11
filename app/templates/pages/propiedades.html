@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "macros/icons.html" import icon %}
+
+{% block title %}Propiedades | Realtor{% endblock %}
+
+{% block content %}
+  <div class="layout-dashboard">
+    {% include "components/_sidebar.html" %}
+
+    <main class="main-content">
+      {% include "components/_navbar.html" %}
+
+      <section aria-labelledby="titulo-propiedades">
+        <header class="propiedades-header">
+          <div>
+            <p class="navbar__kicker">Gestion de inventario</p>
+            <h2 id="titulo-propiedades">Propiedades</h2>
+          </div>
+          <p class="propiedades-header__total">Total: {{ total_propiedades }}</p>
+        </header>
+      </section>
+
+      {% if mostrar_estado_vacio %}
+        <section class="estado-vacio--bloque" aria-live="polite">
+          <span class="estado-vacio">{{ icon('building-2', 20) }} No hay propiedades disponibles.</span>
+        </section>
+      {% else %}
+        <section class="tarjetas-contenido tarjetas-contenido--propiedades" aria-label="Listado de propiedades">
+          {% for propiedad in propiedades %}
+            {% include "components/_card_propiedad.html" %}
+          {% endfor %}
+        </section>
+      {% endif %}
+    </main>
+  </div>
+{% endblock %}
