@@ -9,6 +9,7 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from jinja2 import ChoiceLoader, FileSystemLoader
 from markupsafe import Markup, escape
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,6 +21,12 @@ from app.modules.propiedades.routes import router as propiedades_router
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates.env.loader = ChoiceLoader(
+    [
+        FileSystemLoader(str(BASE_DIR / "templates")),
+        FileSystemLoader(str(BASE_DIR / "modules" / "propiedades" / "templates")),
+    ]
+)
 logger = logging.getLogger(__name__)
 settings = get_settings()
 

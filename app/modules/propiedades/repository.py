@@ -96,3 +96,12 @@ async def listar_para_cards(session: AsyncSession) -> list[Propiedad]:
     stmt = select(Propiedad).order_by(Propiedad.created_at.desc())
     result = await session.execute(stmt)
     return list(result.scalars().all())
+
+
+async def crear_propiedad(session: AsyncSession, propiedad: Propiedad) -> Propiedad:
+    """Persiste una nueva propiedad y materializa el id generado por la base."""
+
+    session.add(propiedad)
+    await session.flush()
+    await session.refresh(propiedad)
+    return propiedad

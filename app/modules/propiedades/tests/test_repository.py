@@ -11,7 +11,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.propiedades import repository
-from app.modules.propiedades.models import EstadoPropiedad
+from app.modules.propiedades.models import EstadoPropiedad, Propiedad
 
 
 @dataclass(frozen=True)
@@ -98,3 +98,85 @@ async def test_listar_para_cards_compone_query_con_orden_desc() -> None:
     sql = str(session.last_stmt)
     assert "ORDER BY" in sql
     assert "created_at DESC" in sql
+
+
+class _FakeSessionCrear:
+    def __init__(self) -> None:
+        self.added: list[Propiedad] = []
+        self.flush_count = 0
+        self.refresh_count = 0
+
+    def add(self, propiedad: Propiedad) -> None:
+        self.added.append(propiedad)
+
+    async def flush(self) -> None:
+        self.flush_count += 1
+
+    async def refresh(self, propiedad: Propiedad) -> None:
+        self.refresh_count += 1
+
+
+@pytest.mark.asyncio
+async def test_crear_propiedad_agrega_y_refresca_la_entidad() -> None:
+    """Asegura que el repositorio materializa la inserción de una propiedad."""
+
+    session = _FakeSessionCrear()
+    propiedad = Propiedad(
+        titulo="Casa Familiar",
+        direccion="456 Coral Way",
+        ciudad="Miami",
+        precio_mensual=3200,
+        habitaciones=4,
+        banos=3.0,
+        area_m2=210,
+        estado=EstadoPropiedad.DISPONIBLE,
+        imagen_url="https://picsum.photos/seed/abc/800/500",
+    )
+
+    resultado = await repository.crear_propiedad(cast(AsyncSession, session), propiedad)
+
+    assert resultado is propiedad
+    assert session.added == [propiedad]
+    assert session.flush_count == 1
+    assert session.refresh_count == 1
+
+
+class _FakeSessionCrear:
+    def __init__(self) -> None:
+        self.added: list[Propiedad] = []
+        self.flush_count = 0
+        self.refresh_count = 0
+
+    def add(self, propiedad: Propiedad) -> None:
+        self.added.append(propiedad)
+
+    async def flush(self) -> None:
+        self.flush_count += 1
+
+    async def refresh(self, propiedad: Propiedad) -> None:
+        self.refresh_count += 1
+
+
+@pytest.mark.asyncio
+async def test_crear_propiedad_agrega_y_refresca_la_entidad() -> None:
+    """Asegura que el repositorio materializa la inserción de una propiedad."""
+
+    session = _FakeSessionCrear()
+    propiedad = Propiedad(
+        titulo="Casa Familiar",
+        direccion="456 Coral Way",
+        ciudad="Miami",
+        precio_mensual=3200,
+        habitaciones=4,
+        banos=3.0,
+        area_m2=210,
+        estado=EstadoPropiedad.DISPONIBLE,
+        imagen_url="https://picsum.photos/seed/abc/800/500",
+    )
+
+    resultado = await repository.crear_propiedad(cast(AsyncSession, session), propiedad)
+
+    assert resultado is propiedad
+    assert session.added == [propiedad]
+    assert session.flush_count == 1
+    assert session.refresh_count == 1

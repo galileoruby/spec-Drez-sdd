@@ -20,6 +20,14 @@
         </header>
       </section>
 
+      {% if mostrar_exito and mensaje_exito %}
+        <section class="seccion-alertas" aria-label="Confirmacion de alta">
+          {% with tipo='success', mensaje=mensaje_exito %}
+            {% include "components/_alerta.html" %}
+          {% endwith %}
+        </section>
+      {% endif %}
+
       {% if mostrar_estado_vacio %}
         <section class="estado-vacio--bloque" aria-live="polite">
           <span class="estado-vacio">{{ icon('building-2', 20) }} No hay propiedades disponibles.</span>

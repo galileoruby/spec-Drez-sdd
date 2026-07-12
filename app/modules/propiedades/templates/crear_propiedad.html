@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "macros/icons.html" import icon %}
+
+{% block title %}Crear propiedad | Realtor{% endblock %}
+
+{% block content %}
+  <div class="layout-dashboard">
+    {% include "components/_sidebar.html" %}
+
+    <main class="main-content">
+      {% include "components/_navbar.html" %}
+
+      <section aria-labelledby="titulo-crear-propiedad">
+        <header class="propiedades-header">
+          <div>
+            <p class="navbar__kicker">Alta de inventario</p>
+            <h2 id="titulo-crear-propiedad">Crear propiedad</h2>
+          </div>
+        </header>
+      </section>
+
+      {% if errores.general %}
+        <section class="seccion-alertas" aria-label="Errores de validacion">
+          {% with tipo='danger', mensaje=errores.general %}
+            {% include "components/_alerta.html" %}
+          {% endwith %}
+        </section>
+      {% endif %}
+
+      <section class="accesos-rapidos" aria-labelledby="formulario-crear-propiedad">
+        <div class="accesos-rapidos__title">
+          <h3 id="formulario-crear-propiedad">Datos de la propiedad</h3>
+          <p class="navbar__kicker">Todos los campos se validan en el servidor.</p>
+        </div>
+
+        {% include "_formulario_crear_propiedad.html" %}
+      </section>
+    </main>
+  </div>
+{% endblock %}
