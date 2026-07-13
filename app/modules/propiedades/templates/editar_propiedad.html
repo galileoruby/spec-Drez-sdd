@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "macros/icons.html" import icon %}
+
+{% block title %}Editar propiedad | Realtor{% endblock %}
+
+{% block content %}
+  <div class="layout-dashboard">
+    {% include "components/_sidebar.html" %}
+
+    <main class="main-content">
+      {% include "components/_navbar.html" %}
+
+      <section aria-labelledby="titulo-editar-propiedad">
+        <header class="propiedades-header">
+          <div>
+            <p class="navbar__kicker">Edicion de inventario</p>
+            <h2 id="titulo-editar-propiedad">Editar propiedad</h2>
+          </div>
+        </header>
+      </section>
+
+      {% if errores.general %}
+        <section class="seccion-alertas" aria-label="Errores de validacion">
+          {% with tipo='danger', mensaje=errores.general %}
+            {% include "components/_alerta.html" %}
+          {% endwith %}
+        </section>
+      {% endif %}
+
+      <section class="accesos-rapidos" aria-labelledby="formulario-editar-propiedad">
+        <div class="accesos-rapidos__title">
+          <h3 id="formulario-editar-propiedad">Datos de la propiedad</h3>
+          <p class="navbar__kicker">Todos los campos se validan en el servidor.</p>
+        </div>
+
+        {% include "_formulario_editar_propiedad.html" %}
+      </section>
+    </main>
+  </div>
+{% endblock %}

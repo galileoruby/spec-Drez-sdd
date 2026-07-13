@@ -1,0 +1,102 @@
+<form method="post" action="/propiedades/editar/{{ propiedad_id }}" class="alta-propiedad-form" novalidate>
+  <div class="accesos-rapidos__grid">
+    {% set error_titulo = errores.titulo if errores else none %}
+    {% set error_direccion = errores.direccion if errores else none %}
+    {% set error_ciudad = errores.ciudad if errores else none %}
+    {% set error_precio = errores.precio_mensual if errores else none %}
+    {% set error_habitaciones = errores.habitaciones if errores else none %}
+    {% set error_banos = errores.banos if errores else none %}
+    {% set error_area = errores.area_m2 if errores else none %}
+    {% set error_estado = errores.estado if errores else none %}
+
+    {% set id = "titulo" %}
+    {% set name = "titulo" %}
+    {% set label = "Titulo" %}
+    {% set valor = formulario.titulo if formulario else '' %}
+    {% set requerido = true %}
+    {% set error = error_titulo %}
+    {% set placeholder = "Ej. Penthouse en Brickell" %}
+    {% set tipo = "text" %}
+    {% include "components/_form_field.html" %}
+
+    {% set id = "direccion" %}
+    {% set name = "direccion" %}
+    {% set label = "Direccion" %}
+    {% set valor = formulario.direccion if formulario else '' %}
+    {% set requerido = true %}
+    {% set error = error_direccion %}
+    {% set placeholder = "Ej. 123 Brickell Ave" %}
+    {% set tipo = "text" %}
+    {% include "components/_form_field.html" %}
+
+    {% set id = "ciudad" %}
+    {% set name = "ciudad" %}
+    {% set label = "Ciudad" %}
+    {% set valor = formulario.ciudad if formulario else '' %}
+    {% set requerido = true %}
+    {% set error = error_ciudad %}
+    {% set placeholder = "Ej. Miami" %}
+    {% set tipo = "text" %}
+    {% include "components/_form_field.html" %}
+
+    {% set id = "precio_mensual" %}
+    {% set name = "precio_mensual" %}
+    {% set label = "Precio mensual" %}
+    {% set valor = formulario.precio_mensual if formulario else '' %}
+    {% set requerido = true %}
+    {% set error = error_precio %}
+    {% set placeholder = "Ej. 3500" %}
+    {% set tipo = "number" %}
+    {% include "components/_form_field.html" %}
+
+    {% set id = "habitaciones" %}
+    {% set name = "habitaciones" %}
+    {% set label = "Habitaciones" %}
+    {% set valor = formulario.habitaciones if formulario else '' %}
+    {% set requerido = true %}
+    {% set error = error_habitaciones %}
+    {% set placeholder = "Ej. 3" %}
+    {% set tipo = "number" %}
+    {% include "components/_form_field.html" %}
+
+    {% set id = "banos" %}
+    {% set name = "banos" %}
+    {% set label = "Banos" %}
+    {% set valor = formulario.banos if formulario else '' %}
+    {% set requerido = true %}
+    {% set error = error_banos %}
+    {% set placeholder = "Ej. 2.5" %}
+    {% set tipo = "number" %}
+    {% include "components/_form_field.html" %}
+
+    {% set id = "area_m2" %}
+    {% set name = "area_m2" %}
+    {% set label = "Area m2" %}
+    {% set valor = formulario.area_m2 if formulario else '' %}
+    {% set requerido = true %}
+    {% set error = error_area %}
+    {% set placeholder = "Ej. 120" %}
+    {% set tipo = "number" %}
+    {% include "components/_form_field.html" %}
+
+    <div class="form-field">
+      <label class="form-field__label" for="estado">Estado</label>
+      <select class="form-field__input" id="estado" name="estado" required>
+        <option value="">Selecciona un estado</option>
+        {% for estado in estados %}
+          <option value="{{ estado }}" {% if formulario.estado == estado %}selected{% endif %}>{{ estado | replace('_', ' ') | capitalize }}</option>
+        {% endfor %}
+      </select>
+      {% if error_estado %}
+        <p class="form-field__error" role="alert">{{ error_estado }}</p>
+      {% endif %}
+    </div>
+
+    <input type="hidden" name="updated_at" value="{{ formulario.updated_at if formulario else '' }}" />
+  </div>
+
+  <div class="navbar__right">
+    <a class="btn btn--secondary" href="/propiedades">Cancelar</a>
+    <button type="submit" class="btn btn--primary">Guardar cambios</button>
+  </div>
+</form>

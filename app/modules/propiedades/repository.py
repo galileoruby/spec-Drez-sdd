@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from uuid import UUID
 
 from app.modules.propiedades.models import EstadoPropiedad, Propiedad
 
@@ -40,6 +41,41 @@ async def obtener_por_identidad_compuesta(
         Propiedad.direccion == direccion_norm,
         Propiedad.ciudad == ciudad_norm,
     )
+    result = await session.execute(stmt)
+    return result.scalar_one_or_none()
+
+
+async def obtener_por_identidad_compuesta_excluyendo_id(
+    session: AsyncSession,
+    titulo: str,
+    direccion: str,
+    ciudad: str,
+    propiedad_id: UUID,
+) -> Propiedad | None:
+    """Obtiene una propiedad por identidad excluyendo la propiedad activa."""
+
+    titulo_norm, direccion_norm, ciudad_norm = _normalizar_identidad_negocio(
+        titulo,
+        direccion,
+        ciudad,
+    )
+    stmt = _select_base().where(
+        Propiedad.titulo == titulo_norm,
+        Propiedad.direccion == direccion_norm,
+        Propiedad.ciudad == ciudad_norm,
+        Propiedad.id != propiedad_id,
+    )
+    result = await session.execute(stmt)
+    return result.scalar_one_or_none()
+
+
+async def obtener_por_id(
+    session: AsyncSession,
+    propiedad_id: UUID,
+) -> Propiedad | None:
+    """Obtiene una propiedad por su identificador primario."""
+
+    stmt = _select_base().where(Propiedad.id == propiedad_id)
     result = await session.execute(stmt)
     return result.scalar_one_or_none()
 
@@ -100,6 +136,15 @@ async def listar_para_cards(session: AsyncSession) -> list[Propiedad]:
 
 async def crear_propiedad(session: AsyncSession, propiedad: Propiedad) -> Propiedad:
     """Persiste una nueva propiedad y materializa el id generado por la base."""
+
+    session.add(propiedad)
+    await session.flush()
+    await session.refresh(propiedad)
+    return propiedad
+
+
+async def actualizar_propiedad(session: AsyncSession, propiedad: Propiedad) -> Propiedad:
+    """Persiste una propiedad existente tras aplicar cambios en memoria."""
 
     session.add(propiedad)
     await session.flush()

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from uuid import UUID
 
@@ -17,6 +18,10 @@ from app.modules.propiedades.schemas import (
     PropiedadCrearVista,
     PropiedadCreadaResultado,
     PropiedadCardView,
+    PropiedadEditarErrores,
+    PropiedadEditarFormulario,
+    PropiedadEditarVista,
+    PropiedadEditadaResultado,
 )
 
 FALLBACK_IMAGEN_LOCAL = "/static/icons/building-2.svg"
@@ -25,7 +30,12 @@ CardsProvider = Callable[[AsyncSession], Awaitable[list[Propiedad]]]
 PropiedadExistenteProvider = Callable[
     [AsyncSession, str, str, str], Awaitable[Propiedad | None]
 ]
+PropiedadExistenteExcluyenteProvider = Callable[
+    [AsyncSession, str, str, str, UUID], Awaitable[Propiedad | None]
+]
+PropiedadPorIdProvider = Callable[[AsyncSession, UUID], Awaitable[Propiedad | None]]
 CrearPropiedadProvider = Callable[[AsyncSession, Propiedad], Awaitable[Propiedad]]
+ActualizarPropiedadProvider = Callable[[AsyncSession, Propiedad], Awaitable[Propiedad]]
 ImagenDeterministaProvider = Callable[[UUID], str]
 
 
@@ -35,6 +45,30 @@ class ErrorValidacionCreacionPropiedad(Exception):
     def __init__(self, contexto: PropiedadCrearVista) -> None:
         super().__init__("No fue posible validar la creación de la propiedad")
         self.contexto = contexto
+
+
+class ErrorValidacionEdicionPropiedad(Exception):
+    """Señala que el formulario de edición contiene errores de negocio."""
+
+    def __init__(self, contexto: PropiedadEditarVista) -> None:
+        super().__init__("No fue posible validar la edición de la propiedad")
+        self.contexto = contexto
+
+
+class ErrorConflictoOptimistaEdicionPropiedad(Exception):
+    """Señala que la propiedad fue modificada por otro proceso."""
+
+    def __init__(self, contexto: PropiedadEditarVista) -> None:
+        super().__init__("La propiedad cambió desde la última lectura")
+        self.contexto = contexto
+
+
+class PropiedadNoEncontradaError(Exception):
+    """Señala que una propiedad solicitada no existe."""
+
+    def __init__(self, propiedad_id: UUID) -> None:
+        super().__init__(f"No existe una propiedad con id {propiedad_id}")
+        self.propiedad_id = propiedad_id
 
 
 def normalizar_identidad_negocio(
@@ -85,6 +119,134 @@ def _formatear_decimal(
         return fallback
     numero = float(valor)
     return f"{numero:.{precision}f}".rstrip("0").rstrip(".")
+
+
+def _propiedad_a_formulario_edicion(propiedad: Propiedad) -> PropiedadEditarFormulario:
+    """Construye el formulario de edición a partir de una entidad persistida."""
+
+    updated_at = ""
+    if isinstance(propiedad.updated_at, datetime):
+        updated_at = propiedad.updated_at.isoformat()
+
+    return PropiedadEditarFormulario(
+        titulo=propiedad.titulo,
+        direccion=propiedad.direccion,
+        ciudad=propiedad.ciudad,
+        precio_mensual=str(propiedad.precio_mensual),
+        habitaciones=str(propiedad.habitaciones),
+        banos=str(propiedad.banos),
+        area_m2=str(propiedad.area_m2),
+        estado=propiedad.estado.value,
+        updated_at=updated_at,
+    )
+
+
+def _errores_creacion_desde_dict(errores: dict[str, str]) -> PropiedadCrearErrores:
+    """Convierte un diccionario de errores en el contrato de alta."""
+
+    return PropiedadCrearErrores(
+        titulo=errores.get("titulo"),
+        direccion=errores.get("direccion"),
+        ciudad=errores.get("ciudad"),
+        precio_mensual=errores.get("precio_mensual"),
+        habitaciones=errores.get("habitaciones"),
+        banos=errores.get("banos"),
+        area_m2=errores.get("area_m2"),
+        general=errores.get("general"),
+    )
+
+
+def _errores_edicion_desde_dict(errores: dict[str, str]) -> PropiedadEditarErrores:
+    """Convierte un diccionario de errores en el contrato de edición."""
+
+    return PropiedadEditarErrores(
+        titulo=errores.get("titulo"),
+        direccion=errores.get("direccion"),
+        ciudad=errores.get("ciudad"),
+        precio_mensual=errores.get("precio_mensual"),
+        habitaciones=errores.get("habitaciones"),
+        banos=errores.get("banos"),
+        area_m2=errores.get("area_m2"),
+        estado=errores.get("estado"),
+        general=errores.get("general"),
+    )
+
+
+def _es_estado_valido(estado: str) -> bool:
+    """Indica si el valor recibido pertenece al catálogo de estados."""
+
+    return estado in {item.value for item in EstadoPropiedad}
+
+
+def _parsear_estado(valor: str, errores: dict[str, str]) -> str | None:
+    """Intenta normalizar el estado recibido desde el formulario."""
+
+    estado = _limpiar_texto(valor).casefold()
+    if not estado:
+        _agregar_error(errores, "estado", "Este campo es obligatorio.")
+        return None
+    if not _es_estado_valido(estado):
+        _agregar_error(errores, "estado", "Debe seleccionar un estado válido.")
+        return None
+    return estado
+
+
+def _formulario_normativo(
+    formulario: PropiedadCrearFormulario | PropiedadEditarFormulario,
+    *,
+    requiere_estado: bool = False,
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Valida y normaliza los campos de entrada del formulario."""
+
+    errores: dict[str, str] = {}
+
+    titulo = _limpiar_texto(formulario.titulo)
+    direccion = _limpiar_texto(formulario.direccion)
+    ciudad = _limpiar_texto(formulario.ciudad)
+    precio_mensual = _parsear_decimal(formulario.precio_mensual.strip(), "precio_mensual", errores)
+    habitaciones = _parsear_entero(formulario.habitaciones.strip(), "habitaciones", errores)
+    banos = _parsear_decimal(formulario.banos.strip(), "banos", errores)
+    area_m2 = _parsear_decimal(formulario.area_m2.strip(), "area_m2", errores)
+    estado = _parsear_estado(getattr(formulario, "estado", ""), errores) if requiere_estado else EstadoPropiedad.DISPONIBLE.value
+
+    if not titulo:
+        _agregar_error(errores, "titulo", "Este campo es obligatorio.")
+    if not direccion:
+        _agregar_error(errores, "direccion", "Este campo es obligatorio.")
+    if not ciudad:
+        _agregar_error(errores, "ciudad", "Este campo es obligatorio.")
+
+    if precio_mensual is not None and precio_mensual <= 0:
+        _agregar_error(errores, "precio_mensual", "Debe ser mayor que 0.")
+
+    if habitaciones is not None and not 1 <= habitaciones <= 15:
+        _agregar_error(errores, "habitaciones", "Debe estar entre 1 y 15.")
+
+    if banos is not None:
+        if banos < Decimal("0.5") or banos > Decimal("8.0"):
+            _agregar_error(errores, "banos", "Debe estar entre 0.5 y 8.0.")
+        elif (banos * 2) % 1 != 0:
+            _agregar_error(errores, "banos", "Debe avanzar en pasos de 0.5.")
+
+    if area_m2 is not None and area_m2 <= 0:
+        _agregar_error(errores, "area_m2", "Debe ser mayor que 0.")
+
+    if errores or estado is None:
+        return {}, errores
+
+    return (
+        {
+            "titulo": titulo,
+            "direccion": direccion,
+            "ciudad": ciudad,
+            "precio_mensual": str(precio_mensual),
+            "habitaciones": str(habitaciones),
+            "banos": str(banos.quantize(Decimal("0.1"))),
+            "area_m2": str(area_m2),
+            "estado": estado,
+        },
+        errores,
+    )
 
 
 def _limpiar_texto(valor: str) -> str:
@@ -142,6 +304,7 @@ def _mapear_a_card(propiedad: Propiedad) -> PropiedadCardView:
     habitaciones = max(int(propiedad.habitaciones or 0), 0)
 
     return PropiedadCardView(
+        id=propiedad.id,
         imagen_url=imagen_url or FALLBACK_IMAGEN_LOCAL,
         titulo=titulo,
         direccion=direccion_compuesta,
@@ -165,68 +328,18 @@ def construir_contexto_creacion(
     )
 
 
-def _formulario_normativo(
-    formulario: PropiedadCrearFormulario,
-) -> tuple[dict[str, str], PropiedadCrearErrores]:
-    """Valida y normaliza los campos de entrada del formulario."""
+def construir_contexto_edicion(
+    propiedad: Propiedad,
+    formulario: PropiedadEditarFormulario | None = None,
+    errores: PropiedadEditarErrores | None = None,
+) -> PropiedadEditarVista:
+    """Construye el contexto base de la pantalla de edición."""
 
-    errores: dict[str, str] = {}
-
-    titulo = _limpiar_texto(formulario.titulo)
-    direccion = _limpiar_texto(formulario.direccion)
-    ciudad = _limpiar_texto(formulario.ciudad)
-    precio_mensual = _parsear_decimal(formulario.precio_mensual.strip(), "precio_mensual", errores)
-    habitaciones = _parsear_entero(formulario.habitaciones.strip(), "habitaciones", errores)
-    banos = _parsear_decimal(formulario.banos.strip(), "banos", errores)
-    area_m2 = _parsear_decimal(formulario.area_m2.strip(), "area_m2", errores)
-
-    if not titulo:
-        _agregar_error(errores, "titulo", "Este campo es obligatorio.")
-    if not direccion:
-        _agregar_error(errores, "direccion", "Este campo es obligatorio.")
-    if not ciudad:
-        _agregar_error(errores, "ciudad", "Este campo es obligatorio.")
-
-    if precio_mensual is not None and precio_mensual <= 0:
-        _agregar_error(errores, "precio_mensual", "Debe ser mayor que 0.")
-
-    if habitaciones is not None and not 1 <= habitaciones <= 10:
-        _agregar_error(errores, "habitaciones", "Debe estar entre 1 y 10.")
-
-    if banos is not None:
-        if banos.as_tuple().exponent < -1:
-            _agregar_error(errores, "banos", "Debe tener como máximo un decimal.")
-        elif not Decimal("1.0") <= banos <= Decimal("5.0"):
-            _agregar_error(errores, "banos", "Debe estar entre 1.0 y 5.0.")
-
-    if area_m2 is not None and area_m2 <= 0:
-        _agregar_error(errores, "area_m2", "Debe ser mayor que 0.")
-
-    if errores:
-        return (
-            {},
-            PropiedadCrearErrores(
-                titulo=errores.get("titulo"),
-                direccion=errores.get("direccion"),
-                ciudad=errores.get("ciudad"),
-                precio_mensual=errores.get("precio_mensual"),
-                habitaciones=errores.get("habitaciones"),
-                banos=errores.get("banos"),
-                area_m2=errores.get("area_m2"),
-            ),
-        )
-
-    return (
-        {
-            "titulo": titulo,
-            "direccion": direccion,
-            "ciudad": ciudad,
-            "precio_mensual": str(precio_mensual),
-            "habitaciones": str(habitaciones),
-            "banos": str(banos.quantize(Decimal("0.1"))),
-            "area_m2": str(area_m2),
-        },
-        PropiedadCrearErrores(),
+    return PropiedadEditarVista(
+        propiedad_id=propiedad.id,
+        formulario=formulario or _propiedad_a_formulario_edicion(propiedad),
+        errores=errores or PropiedadEditarErrores(),
+        estados=[estado.value for estado in EstadoPropiedad],
     )
 
 
@@ -246,6 +359,18 @@ async def construir_contexto_listado(
     )
 
 
+def _parsear_updated_at(valor: str) -> datetime | None:
+    """Intenta convertir el valor de control optimista recibido en el formulario."""
+
+    if not valor:
+        return None
+
+    try:
+        return datetime.fromisoformat(valor)
+    except ValueError:
+        return None
+
+
 async def crear_propiedad(
     session: AsyncSession,
     formulario: PropiedadCrearFormulario,
@@ -257,8 +382,9 @@ async def crear_propiedad(
     """Valida y persiste una nueva propiedad en el repositorio."""
 
     formulario_normalizado, errores = _formulario_normativo(formulario)
-    contexto = construir_contexto_creacion(formulario, errores)
-    if errores.model_dump(exclude_none=True):
+    errores_modelo = _errores_creacion_desde_dict(errores)
+    contexto = construir_contexto_creacion(formulario, errores_modelo)
+    if errores:
         raise ErrorValidacionCreacionPropiedad(contexto)
 
     assert formulario_normalizado
@@ -268,11 +394,11 @@ async def crear_propiedad(
 
     existente = await obtener_existente(session, titulo, direccion, ciudad)
     if existente is not None:
-        errores = PropiedadCrearErrores(
+        errores_modelo = PropiedadCrearErrores(
             general="Ya existe una propiedad con la misma identidad de negocio.",
         )
         raise ErrorValidacionCreacionPropiedad(
-            construir_contexto_creacion(formulario, errores)
+            construir_contexto_creacion(formulario, errores_modelo)
         )
 
     propiedad = Propiedad(
@@ -306,4 +432,81 @@ async def crear_propiedad(
         propiedad_id=propiedad.id,
         redireccion="/propiedades?creada=1",
         mensaje_exito="Propiedad creada correctamente.",
+    )
+
+
+async def obtener_propiedad_por_id(
+    session: AsyncSession,
+    propiedad_id: UUID,
+    *,
+    obtener_por_id: PropiedadPorIdProvider = repository.obtener_por_id,
+) -> Propiedad | None:
+    """Obtiene una propiedad existente para edición o retorno 404."""
+
+    return await obtener_por_id(session, propiedad_id)
+
+
+async def editar_propiedad(
+    session: AsyncSession,
+    propiedad_id: UUID,
+    formulario: PropiedadEditarFormulario,
+    *,
+    obtener_por_id: PropiedadPorIdProvider = repository.obtener_por_id,
+    obtener_existente: PropiedadExistenteExcluyenteProvider = repository.obtener_por_identidad_compuesta_excluyendo_id,
+    guardar_propiedad: ActualizarPropiedadProvider = repository.actualizar_propiedad,
+) -> PropiedadEditadaResultado:
+    """Valida y persiste una edición de propiedad existente."""
+
+    propiedad = await obtener_por_id(session, propiedad_id)
+    if propiedad is None:
+        raise PropiedadNoEncontradaError(propiedad_id)
+
+    formulario_normalizado, errores = _formulario_normativo(formulario, requiere_estado=True)
+    errores_modelo = _errores_edicion_desde_dict(errores)
+    contexto = construir_contexto_edicion(propiedad, formulario, errores_modelo)
+    if errores:
+        raise ErrorValidacionEdicionPropiedad(contexto)
+
+    updated_at_formulario = _parsear_updated_at(formulario.updated_at)
+    if updated_at_formulario is None or updated_at_formulario != propiedad.updated_at:
+        errores_modelo = PropiedadEditarErrores(
+            general="La propiedad cambió desde la última lectura. Recarga la página e intenta de nuevo.",
+        )
+        raise ErrorConflictoOptimistaEdicionPropiedad(
+            construir_contexto_edicion(propiedad, formulario, errores_modelo)
+        )
+
+    existente = await obtener_existente(
+        session,
+        formulario_normalizado["titulo"],
+        formulario_normalizado["direccion"],
+        formulario_normalizado["ciudad"],
+        propiedad_id,
+    )
+    if existente is not None:
+        errores_modelo = PropiedadEditarErrores(
+            general="Ya existe una propiedad con la misma identidad de negocio.",
+        )
+        raise ErrorValidacionEdicionPropiedad(
+            construir_contexto_edicion(propiedad, formulario, errores_modelo)
+        )
+
+    propiedad.titulo = formulario_normalizado["titulo"]
+    propiedad.direccion = formulario_normalizado["direccion"]
+    propiedad.ciudad = formulario_normalizado["ciudad"]
+    propiedad.precio_mensual = Decimal(formulario_normalizado["precio_mensual"])
+    propiedad.habitaciones = int(formulario_normalizado["habitaciones"])
+    propiedad.banos = Decimal(formulario_normalizado["banos"])
+    propiedad.area_m2 = Decimal(formulario_normalizado["area_m2"])
+    propiedad.estado = EstadoPropiedad(formulario_normalizado["estado"])
+    propiedad.updated_at = datetime.now(UTC)
+
+    propiedad = await guardar_propiedad(session, propiedad)
+    await session.commit()
+    await session.refresh(propiedad)
+
+    return PropiedadEditadaResultado(
+        propiedad_id=propiedad.id,
+        redireccion="/propiedades?editada=1",
+        mensaje_exito="Propiedad editada correctamente.",
     )

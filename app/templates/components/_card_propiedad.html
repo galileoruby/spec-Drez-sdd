@@ -24,6 +24,9 @@
         {% include "components/_badge_estado.html" %}
         <span class="card-propiedad__precio">{{ propiedad.precio_renta }}</span>
       </div>
+      <div class="card-propiedad__acciones">
+        <a class="btn btn--secondary" href="/propiedades/editar/{{ propiedad.id }}">Editar</a>
+      </div>
     </div>
   {% else %}
     <div class="estado-vacio">

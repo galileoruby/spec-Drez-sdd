@@ -9,6 +9,7 @@ class PropiedadCardView(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
+    id: UUID
     imagen_url: str
     titulo: str
     direccion: str
@@ -45,6 +46,22 @@ class PropiedadCrearFormulario(BaseModel):
     area_m2: str = ""
 
 
+class PropiedadEditarFormulario(BaseModel):
+    """Contrato de entrada cruda del formulario de edicion de propiedades."""
+
+    model_config = ConfigDict(frozen=True)
+
+    titulo: str = ""
+    direccion: str = ""
+    ciudad: str = ""
+    precio_mensual: str = ""
+    habitaciones: str = ""
+    banos: str = ""
+    area_m2: str = ""
+    estado: str = ""
+    updated_at: str = ""
+
+
 class PropiedadCrearErrores(BaseModel):
     """Errores asociados a cada campo del formulario de alta."""
 
@@ -69,8 +86,45 @@ class PropiedadCrearVista(BaseModel):
     errores: PropiedadCrearErrores
 
 
+class PropiedadEditarErrores(BaseModel):
+    """Errores asociados a cada campo del formulario de edicion."""
+
+    model_config = ConfigDict(frozen=True)
+
+    titulo: str | None = None
+    direccion: str | None = None
+    ciudad: str | None = None
+    precio_mensual: str | None = None
+    habitaciones: str | None = None
+    banos: str | None = None
+    area_m2: str | None = None
+    estado: str | None = None
+    general: str | None = None
+
+
+class PropiedadEditarVista(BaseModel):
+    """Contexto server-rendered para la pantalla de edicion de propiedades."""
+
+    model_config = ConfigDict(frozen=True)
+
+    propiedad_id: UUID
+    formulario: PropiedadEditarFormulario
+    errores: PropiedadEditarErrores
+    estados: list[str]
+
+
 class PropiedadCreadaResultado(BaseModel):
     """Resultado funcional de una creacion exitosa de propiedad."""
+
+    model_config = ConfigDict(frozen=True)
+
+    propiedad_id: UUID
+    redireccion: str
+    mensaje_exito: str
+
+
+class PropiedadEditadaResultado(BaseModel):
+    """Resultado funcional de una edicion exitosa de propiedad."""
 
     model_config = ConfigDict(frozen=True)
 
